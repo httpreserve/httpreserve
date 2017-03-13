@@ -1,2 +1,3 @@
+![alt text](https://github.com/exponential-decay/httpreserve/raw/master/src/images/httpreserve-logo.png "httpreserve")
 # httpreserve
 Work in progress...
