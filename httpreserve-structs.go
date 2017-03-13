@@ -1,6 +1,5 @@
 package main
 
-
 type LinkStats struct {
 	FileName 							string
 	Link 									string

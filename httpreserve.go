@@ -4,8 +4,10 @@ import (
 		"os"
       "net/http"
       "fmt"
+		//"log"
 		//"io/ioutil"
-      //"bufio"
+      "bufio"
+		"github.com/pkg/errors"
    )
 
 //ftp: ftp://exponentialdecay.co.uk/
@@ -19,54 +21,84 @@ const CONN_OKAY int8 = 0
 const CONN_BAD int8 = 1
 
 const GET = http.MethodGet
+const HEAD = http.MethodHead
 
-func testConnection (request string) int8 {
+const USERAGENT = "@exponentialDK httpreserve"
+const BYTERANGE = "bytes=0-0"
 
-   conn := CONN_OKAY
-	req, err := http.NewRequest(GET, request, nil) 
+func testConnection (request string) (LinkStats, error) {
+
+	var ls LinkStats
+
+	req, err := http.NewRequest(HEAD, request, nil) 
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "ERROR: error creating request,", err)
-      os.Exit(1)
+		return ls, errors.Wrap(err, "create request failed")
+		//if unsupported protocol... correct? 
 	}
 
-   req.Header.Add("User-Agent", "@exponentialDK Digital Preservation of HTTP in documentary heritage.")
-   req.Header.Add("Range", "bytes=0-0") 
-
-	fmt.Println(req.Header)
+   req.Header.Add("User-Agent", USERAGENT)
+   req.Header.Add("Range", BYTERANGE) 
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-      conn = CONN_BAD
-		return conn
+		return ls, errors.Wrap(err, "client request failed")
 	}
 
-	fmt.Println(resp.Status)
-	fmt.Println(http.StatusText(resp.StatusCode))
-	fmt.Println("")
-	fmt.Println(resp.Header)
-	fmt.Println("")
-
-	//body, _ := ioutil.ReadAll(resp.Body)
+	ls.ResponseCode = resp.StatusCode
+	ls.ResponseText = http.StatusText(resp.StatusCode)
 	resp.Body.Close()
 
-	// display content to screen ... save this to a HTML file and view the file with browser ;-)
-	//fmt.Println(string(body))
+	return ls, nil
+}
 
-   return conn
+func LinkStat(url string) (LinkStats, error) {
+	var a LinkStats
+	a, err := testConnection(url)
+	return a, err
+}
+
+//might be useful...
+func stdiolooper() {
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text()) // Println will add back the final '\n'
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "[x]", errors.Wrap(err, "read failed"))
+	}
+}
+
+func looper() {
+
+	file, err := os.Open("link-examples/linklist.txt") 
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "[x]", errors.Wrap(err, "file open failed"))
+		os.Exit(1)
+	}
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+
+		//send throught to our function tog get stats...
+		//fmt.Println(scanner.Text()) 
+		ls, err := LinkStat(scanner.Text())
+		if err != nil {
+			//report error, go no further...
+			fmt.Fprintln(os.Stderr, "[x]", errors.Wrap(err, "LinkStat failed"))			
+		} else {
+			//TODO: correct scheme, e.g. for www. no http
+			//TODO: if ftp, find alternative way to handle...
+			//TODO: if response positive, populate LS further
+			fmt.Fprintln(os.Stdout, "[x]", ls.ResponseCode, ls.ResponseText)
+      }
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "[x]", errors.Wrap(err, "read failed"))
+	}
+
 }
 
 func main() {
-	//testing accept-range...
-	a := testConnection("https://raw.githubusercontent.com/exponential-decay/the-format-registry/master/LICENSE")
-	fmt.Println(a)
-	fmt.Println("xxx")
-
-	//404 returned if not there... (useful)
-	a = testConnection("http://web.archive.org/web/20161104020243/http://exponentialdecayxxxx.co.uk/#")
-	fmt.Println(a)
-	fmt.Println("xxx")
-
-
+	looper()
 }
 

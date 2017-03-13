@@ -7,4 +7,6 @@ wikipedia.org
 ftp://exponentialdecay.co.uk/
 http://exponentialdecay.co.uk
 https://github.com/exponential-decay
-
+http://web.archive.org/web/20161104020243/http://exponentialdecayxxxx.co.uk/#
+http://web.archive.org/web/20161104020243/http://exponentialdecay.co.uk/#
+https://raw.githubusercontent.com/exponential-decay/the-format-registry/master/LICENSE
