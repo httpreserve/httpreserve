@@ -7,7 +7,9 @@ import (
 		//"log"
 		//"io/ioutil"
       "bufio"
+		"net/url"
 		"github.com/pkg/errors"
+		"github.com/dutchcoders/goftp"
    )
 
 //ftp: ftp://exponentialdecay.co.uk/
@@ -26,7 +28,27 @@ const HEAD = http.MethodHead
 const USERAGENT = "@exponentialDK httpreserve"
 const BYTERANGE = "bytes=0-0"
 
-func testConnection (request string) (LinkStats, error) {
+func handleftp(request string) (LinkStats, error) {
+	//var ftp *goftp.FTP
+
+	// For debug messages: goftp.ConnectDbg("ftp.server.com:21")
+	//"ftp.server.com:21"
+
+	request = request + ":21"
+	request = "ftp.exponentialdecay.co.uk:21"
+
+	fmt.Println(request)
+	//goftp.ConnectDbg(
+	//TODO: parse debug messages...
+	if _, err := goftp.ConnectDbg(request); err != nil {
+		panic(err)
+	}
+
+	var ls LinkStats
+	return ls, nil
+}
+
+func handlehttp(request string) (LinkStats, error) {
 
 	var ls LinkStats
 
@@ -48,6 +70,27 @@ func testConnection (request string) (LinkStats, error) {
 	ls.ResponseCode = resp.StatusCode
 	ls.ResponseText = http.StatusText(resp.StatusCode)
 	resp.Body.Close()
+
+	return ls, nil
+
+}
+
+func testConnection (request string) (LinkStats, error) {
+
+	var ls LinkStats
+
+	u, err := url.Parse(request)
+	if err != nil {
+		return ls, errors.Wrap(err, "url parse failed")
+	}
+
+	fmt.Println(u.Scheme)
+	if u.Scheme == "ftp" {
+		_, err := handleftp(request)
+		if err != nil {
+			panic(err)
+		}
+	}
 
 	return ls, nil
 }
