@@ -1,5 +1,7 @@
 package main
 
+import "net/http"
+
 type LinkStats struct {
 	FileName 							string
 	Link 									string
@@ -10,4 +12,7 @@ type LinkStats struct {
 	InternetArchiveResponseCode 	int
 	InternetArchiveResponseText 	string
 	ArchiveNow							bool
+
+	//for debug
+	header *http.Header
 }

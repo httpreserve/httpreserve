@@ -1,6 +1,10 @@
 package main 
 
-import "testing"
+import (
+	"os"
+	"fmt"
+	"testing"
+)
 
 //sample working perma.cc
 //https://perma.cc/T8U2-994F
@@ -10,5 +14,11 @@ import "testing"
 //broken perma.cc (should be a 404)
 //https://perma.cc/48VC-ZS61
 
+func TestSavedURL(t *testing.T) {
+	u, _ := GetSavedURL(generateInternetArchiveSaveMock())
+	fmt.Println(u)
+}
 
-func TestPlaceHolder(t *testing.T) { }
+func TestPlaceHolder(t *testing.T) { 
+	
+}
