@@ -1,3 +1,5 @@
+#httpreserve
+
 <p align="center">
 <a href="https://github.com/exponential-decay/httpreserve#logo">
 <img id="logo" src="https://github.com/exponential-decay/httpreserve/raw/master/src/images/httpreserve-logo.png" title="httpreserve" alt-text="httpreserve"/>
@@ -5,8 +7,6 @@
 <br/>
 Work in Progress
 </p>
-
-#httpreserve
 
 ...
 
@@ -16,4 +16,4 @@ Work in Progress
 
 ###License
 
-GNU General Public License Version 3. [Full Text](LISENCE)
+GNU General Public License Version 3. [Full Text](LICENSE)
