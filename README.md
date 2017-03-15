@@ -6,3 +6,14 @@
 Work in Progress
 </p>
 
+#httpreserve
+
+...
+
+###See Also
+
+[find and Connect](http://www.findandconnectwrblog.info/2016/11/broken-links-broken-trust/) Nicola Laurent on the impact of broken links. 
+
+###License
+
+GNU General Public License Version 3. [Full Text](LISENSE)
