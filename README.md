@@ -16,4 +16,4 @@ Work in Progress
 
 ###License
 
-GNU General Public License Version 3. [Full Text](LISENSE)
+GNU General Public License Version 3. [Full Text](LISENCE)
