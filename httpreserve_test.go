@@ -13,6 +13,16 @@ import (
 //broken perma.cc (should be a 404)
 //https://perma.cc/48VC-ZS61
 
+func TestIALinkNowDate(t *testing.T) {
+	archiveurl := GetPotentialUrlLatest("http://www.bbc.co.uk/news")
+	fmt.Println(archiveurl)
+}
+
+func TestIALinkEarliestDate(t *testing.T) {
+	archiveurl := GetPotentialUrlEarliest("http://www.bbc.co.uk/news")
+	fmt.Println(archiveurl)
+}
+
 func TestSavedURL(t *testing.T) {
 	u, _ := GetSavedURL(generateInternetArchiveSaveMock())
 	fmt.Println(u)
