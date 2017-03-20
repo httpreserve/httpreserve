@@ -10,15 +10,16 @@ import (
 	"github.com/pkg/errors"
 )
 
+const GET = http.MethodGet
+const HEAD = http.MethodHead
+
 var AUTH_CODE = 407
 var NTLM_AUTH = "Proxy-Authenticate"
 var NTLM_FLAG = "Negotiate NTLM"
-var ERR_NTLM = "Requires NTLM Negotiation"
+var ERR_NTLM  = "Requires NTLM Negotiation"
 
-//proxy help:
-//https://jannewmarch.gitbooks.io/network-programming-with-go-golang-/content/http/proxy_handling.html
-//another example:
-//http://stackoverflow.com/questions/40817784/access-https-via-http-proxy-with-basic-authentication
+// Handle HTTP functions of the calling application. If we need to use
+// a proxy then set the flag, if not, then don't. 
 func handlehttp(request string, proxflag bool) (LinkStats, error) {
 
 	var ls LinkStats
@@ -35,6 +36,7 @@ func handlehttp(request string, proxflag bool) (LinkStats, error) {
 	}
    req.Header.Add("User-Agent", USERAGENT)
    req.Header.Add("Range", BYTERANGE) 
+   req.Header.Add("proxy-Connection", "Keep-Alive")
 
 	if proxflag {
 		client, err = returnProxyClient(req)	
@@ -54,29 +56,30 @@ func handlehttp(request string, proxflag bool) (LinkStats, error) {
 
 	ls.ResponseCode = resp.StatusCode
 	ls.ResponseText = http.StatusText(resp.StatusCode)
-	resp.Body.Close()
-y
 
-
-	//fmt.Println(resp)
-	//fmt.Printf("%+v\n", resp)
-
-	if checkNTLM(resp) {
+	if checkNTLM(resp, request) {
+		resp.Body.Close()
 		return ls, errors.New(ERR_NTLM)
 	}
 
+	// once we've closed the body we can't do anything else
+	// with the packet content...
+	resp.Body.Close()
 
 
 	return ls, nil
 }
 
-func checkNTLM(resp *http.Response) bool {
+// Network back-ends like here at Archives New Zealand use NTLM
+// authentication as a secondary proxy that applications have to 
+// jump through. NTLM stands for NT Lan Management. If we receive
+// a cue to have to do NTLM authentication then we need to jump 
+// through those hoops. We begin that process here. 
+func checkNTLM(resp *http.Response, request string) bool {
 	if resp.StatusCode == 407 {
-		fmt.Print("x ", strings.Join(resp.Header[NTLM_AUTH], ""), " x\n")
-		if strings.Join(resp.Header[NTLM_AUTH], " ") == NTLM_FLAG {
-			//NTLM DANCE
-			//https://msdn.microsoft.com/en-us/library/dd925287(v=office.12).aspx
-			fmt.Println("NTLM Dance Here")
+		if strings.Join(resp.Header[NTLM_AUTH], " ") == NTLM_FLAG {			
+			// we have to do the NTLM DANCE here...
+			// https://github.com/exponential-decay/httpreserve/issues/1
 			return true
 		}
 	}

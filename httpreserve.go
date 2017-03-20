@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"net/http"
 	"fmt"
 	"bufio"
 	"net/url"
@@ -23,9 +22,6 @@ const USE_PROXY = false
 
 const CONN_OKAY int8 = 0
 const CONN_BAD int8 = 1
-
-const GET = http.MethodGet
-const HEAD = http.MethodHead
 
 const USERAGENT = "exponentialDK-httpreserve/0.0.0"
 const BYTERANGE = "bytes=0-0"

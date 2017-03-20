@@ -1,3 +1,2 @@
 http://www.nationalarchives.gov.uk/PRONOM/fmt/975.xml
 https://www.github.com/exponential-decay
-http://web.archive.org/web/20161104020243/http://exponentialdecay.co.uk/#

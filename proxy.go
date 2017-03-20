@@ -8,11 +8,15 @@ import (
 	"net/url"
 )
 
+// Links that may help with proxy configuration for our application
+// https://jannewmarch.gitbooks.io/network-programming-with-go-golang-/content/http/proxy_handling.html
+// http://stackoverflow.com/questions/40817784/access-https-via-http-proxy-with-basic-authentication
+
 func returnProxyClient(req *http.Request) (*http.Client, error) {
 
 	c := &http.Client{}
 
-	auth := "spencero:***"
+	auth := "dia\\spencero:****"
 	proxy := "https://wlgproxy:8080"
 
 	proxyURL, err := url.Parse(proxy)
