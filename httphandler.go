@@ -55,7 +55,7 @@ func handlehttp(request string, proxflag bool) (LinkStats, error) {
 	ls.ResponseCode = resp.StatusCode
 	ls.ResponseText = http.StatusText(resp.StatusCode)
 	resp.Body.Close()
-
+y
 
 
 	//fmt.Println(resp)
@@ -74,6 +74,8 @@ func checkNTLM(resp *http.Response) bool {
 	if resp.StatusCode == 407 {
 		fmt.Print("x ", strings.Join(resp.Header[NTLM_AUTH], ""), " x\n")
 		if strings.Join(resp.Header[NTLM_AUTH], " ") == NTLM_FLAG {
+			//NTLM DANCE
+			//https://msdn.microsoft.com/en-us/library/dd925287(v=office.12).aspx
 			fmt.Println("NTLM Dance Here")
 			return true
 		}
