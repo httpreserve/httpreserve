@@ -18,17 +18,9 @@ import (
 //hackable uri for saving pages
 //https://web.archive.org/save/https://www.theguardian.com/politics/2017/mar/13/ian-mcewan-clarifies-remarks-likening-brexit-vote-third-reich
 
-const USE_PROXY = false
-
-const CONN_OKAY int8 = 0
-const CONN_BAD int8 = 1
-
-const USERAGENT = "exponentialDK-httpreserve/0.0.0"
-const BYTERANGE = "bytes=0-0"
-
-func testConnection (request string) (LinkStats, error) {
+func testConnection (reqUrl string) (LinkStats, error) {
 	var ls LinkStats
-	u, err := url.Parse(request)
+	u, err := url.Parse(reqUrl)
 	if err != nil {
 		return ls, errors.Wrap(err, "url parse failed")
 	}
@@ -42,7 +34,11 @@ func testConnection (request string) (LinkStats, error) {
 	case "http":
 		fallthrough
 	case "https":
-		ls, err := handlehttp(request, USE_PROXY)
+		sr, err := DefaultSimpleRequest(reqUrl)
+		if err != nil {
+			return ls, errors.Wrap(err, "defaultSimpleRequest failed")
+		}
+		ls, err := httpFromSimpleRequest(sr)
 		if err != nil {
 			return ls, errors.Wrap(err, "handlehttp() failed")
 		}
