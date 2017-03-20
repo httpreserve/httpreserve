@@ -3,11 +3,17 @@ package main
 import (
 	"os"
 	"fmt"
+	"strings"
 	"net/url"
 	"net/http"
 	"net/http/httputil"
 	"github.com/pkg/errors"
 )
+
+var AUTH_CODE = 407
+var NTLM_AUTH = "Proxy-Authenticate"
+var NTLM_FLAG = "Negotiate NTLM"
+var ERR_NTLM = "Requires NTLM Negotiation"
 
 //proxy help:
 //https://jannewmarch.gitbooks.io/network-programming-with-go-golang-/content/http/proxy_handling.html
@@ -50,5 +56,27 @@ func handlehttp(request string, proxflag bool) (LinkStats, error) {
 	ls.ResponseText = http.StatusText(resp.StatusCode)
 	resp.Body.Close()
 
+
+
+	//fmt.Println(resp)
+	//fmt.Printf("%+v\n", resp)
+
+	if checkNTLM(resp) {
+		return ls, errors.New(ERR_NTLM)
+	}
+
+
+
 	return ls, nil
+}
+
+func checkNTLM(resp *http.Response) bool {
+	if resp.StatusCode == 407 {
+		fmt.Print("x ", strings.Join(resp.Header[NTLM_AUTH], ""), " x\n")
+		if strings.Join(resp.Header[NTLM_AUTH], " ") == NTLM_FLAG {
+			fmt.Println("NTLM Dance Here")
+			return true
+		}
+	}
+	return false
 }
