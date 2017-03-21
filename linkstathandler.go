@@ -41,6 +41,14 @@ func makeLinkStats(ls LinkStats) {
 			}
 			fmt.Println(latestIA.Link, latestIA.ResponseCode, latestIA.ResponseText)
 			fmt.Println(earliestIA.Link, earliestIA.ResponseCode, earliestIA.ResponseText)
+
+			fmt.Println()
+			//fmt.Printf("\n%+v\n\n", earliestIA.header.Get("Link"))
+			fmt.Printf("\n%+v\n\n", earliestIA.header)
+
+			//for _, m := range earliestIA.header {
+			//	fmt.Println(m)
+			//}
 		}
 
 		fmt.Println("---")
