@@ -43,6 +43,10 @@ func testConnection (reqUrl string) (LinkStats, error) {
 			return ls, errors.Wrap(err, "handlehttp() failed")
 		}
 		return ls, nil
+	case "":
+		return ls, errors.New(ERR_BLANK_PROTOCOL)		
+	default:
+		return ls, errors.Wrap(errors.New(ERR_UNKNOWN_PROTOCOL), u.Scheme)
 	}
 	return ls, nil
 }
