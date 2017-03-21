@@ -79,7 +79,8 @@ func looper() {
 	for scanner.Scan() {
 		if scanner.Text() != "" {
 			//send through to our function tog get stats...
-			ls, err := LinkStat(scanner.Text())
+			link := scanner.Text()
+			ls, err := LinkStat(link)
 			if err != nil {
 				//rreport error in some way...
 				ls.ProtocolError = true
@@ -95,12 +96,12 @@ func looper() {
 				}
 			}
 			//TODO: Positive or negative... populate LS
-			fmt.Fprintln(os.Stdout, "[LinkStat Success]", ls.ResponseCode, ls.ResponseText)
+			fmt.Fprintln(os.Stdout, "[LinkStat Returned]", ls.ResponseCode, ls.ResponseText)
+			makeLinkStats(ls)
    	}
-   	fmt.Println("----\n\n")
 	}
 	if err := scanner.Err(); err != nil {
-		fmt.Fprintln(os.Stderr, "[x]", errors.Wrap(err, "read failed"))
+		fmt.Fprintln(os.Stderr, "[Scan Error]", errors.Wrap(err, "read http links failed"))
 	}
 }
 

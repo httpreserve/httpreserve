@@ -30,19 +30,19 @@ type SimpleRequest struct {
 // Table structure to be returned from our requests
 // Can be fairly liberal in its expansion
 type LinkStats struct {
-	FileName 							string
+	FileName 							string	// If a filename is provided
 	Link 									string
 	ResponseCode 						int
 	ResponseText 						string
-	ScreenShot 							string // href to screenshot
+	ScreenShot 							string 	// HREF to screenshot
 	InternetArchiveLink 				string
 	InternetArchiveResponseCode 	int
 	InternetArchiveResponseText 	string
-	ArchiveNow							bool
+	ArchiveNow							bool		// Have we saved the page or not
 	ProtocolError						bool
 	ProtocolErrorMessage				string
 
-	//for debug
+	// For debug
 	header *http.Header
 }
 

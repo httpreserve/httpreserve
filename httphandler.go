@@ -10,6 +10,9 @@ import (
 	"github.com/pkg/errors"
 )
 
+const DEBUG_REQUEST = false
+const DEBUG_RESPONSE = false
+
 // At least for testing we're going to be doing a limited range
 // of things with our requests. Create a default object to make that
 // easier for us.
@@ -71,17 +74,28 @@ func handlehttp(method string, requrl *url.URL, proxy bool, byterange string) (L
 		}
 	} 
 
-	dump, _ := httputil.DumpRequest(req, false)
-	fmt.Println("Request header:")
-	fmt.Fprintln(os.Stdout, string(dump))
+	// TODO: Delete in future, maintain for now while getting
+	// to grips with the work we're doing with Golang and this code.
+	if DEBUG_REQUEST {
+		reqdump, _ := httputil.DumpRequest(req, false)
+		fmt.Fprintf(os.Stderr, "%+v\n", reqdump)
+	}
 
 	resp, err := client.Do(req)
 	if err != nil {
 		return ls, errors.Wrap(err, "client request failed")
 	}
 
+	// TODO: Delete in future, maintain for now while getting
+	// to grips with the work we're doing with Golang and this code.
+	if DEBUG_RESPONSE {
+		reqdump, _ := httputil.DumpResponse(resp, false)
+		fmt.Fprintf(os.Stderr, "%+v\n", reqdump)
+	}
+
 	ls.ResponseCode = resp.StatusCode
 	ls.ResponseText = http.StatusText(resp.StatusCode)
+	ls.header = &resp.Header
 
 	if checkNTLM(resp, requrl) {
 		resp.Body.Close()
