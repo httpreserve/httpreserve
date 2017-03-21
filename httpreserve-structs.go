@@ -36,6 +36,7 @@ type LinkStats struct {
 	ResponseText 						string
 	ScreenShot 							string 	// HREF to screenshot
 	InternetArchiveLink 				string
+	InternetArchiveLinkEarliest	string	// Earliest link in Internet Archive
 	InternetArchiveResponseCode 	int
 	InternetArchiveResponseText 	string
 	ArchiveNow							bool		// Have we saved the page or not

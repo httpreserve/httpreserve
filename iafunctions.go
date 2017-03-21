@@ -26,7 +26,7 @@ const DATELAYOUT = "20060102150405"
 // Example URI we need to create looks like this:
 // web.archive.org/web/{date}/url-to-lookup
 // {date} == "20161104020243" == "YYYYMMDDHHMMSS" == %Y%m%d%k%M%S
-func GetPotentialUrlLatest(archiveurl string) string {
+func GetPotentialUrlLatest(archiveurl string) (*url.URL, error) {
 	latestDate := time.Now().Format(DATELAYOUT)
 	return constructUrl(latestDate, archiveurl)
 }
@@ -36,15 +36,19 @@ func GetPotentialUrlLatest(archiveurl string) string {
 // using this function here. 
 // Example URI we need to create looks like this:
 // web.archive.org/web/{date}/url-to-lookup
-func GetPotentialUrlEarliest(archiveurl string) string {
+func GetPotentialUrlEarliest(archiveurl string) (*url.URL, error) {
 	oldestDate := time.Date(1900, time.August, 31, 23, 13, 0, 0, time.Local).Format(DATELAYOUT)
 	return constructUrl(oldestDate, archiveurl)
 }
 
 // Construct the url to return to either the IA earliest or latest
 // IA get functions and return...
-func constructUrl(iadate string, archiveurl string) string {
-	return IA_ROOT + IA_WEB + iadate + "/" + archiveurl
+func constructUrl(iadate string, archiveurl string) (*url.URL, error) {
+	newurl, err := url.Parse(IA_ROOT + IA_WEB + iadate + "/" + archiveurl)
+	if err != nil {
+		return newurl, errors.Wrap(err, "internet archive url creation failed")
+	}
+	return newurl, nil
 }
 
 // Utilize the methods across the package to submit a URL to the 

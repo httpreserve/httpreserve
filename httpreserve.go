@@ -40,7 +40,6 @@ func testConnection (requrl string) (LinkStats, error) {
 		if err != nil {
 			return ls, errors.Wrap(err, "handlehttp() failed")
 		}
-		ls.Link = req
 		return ls, nil
 	case "":
 		ls.Link = req
