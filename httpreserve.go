@@ -66,7 +66,7 @@ func stdiolooper() {
 		fmt.Println(scanner.Text()) // Println will add back the final '\n'
 	}
 	if err := scanner.Err(); err != nil {
-		fmt.Fprintln(os.Stderr, "[x]", errors.Wrap(err, "read failed"))
+		fmt.Fprintln(os.Stderr, "[stdio]", errors.Wrap(err, "read failed"))
 	}
 }
 
@@ -74,7 +74,7 @@ func looper() {
 
 	file, err := os.Open("link-examples/linkswork.txt") 
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "[x]", errors.Wrap(err, "file open failed"))
+		fmt.Fprintln(os.Stderr, "[File Open]", errors.Wrap(err, "file open failed"))
 		os.Exit(1)
 	}
 	scanner := bufio.NewScanner(file)
@@ -98,7 +98,7 @@ func looper() {
 				}
 			}
 			//TODO: Positive or negative... populate LS
-			fmt.Fprintln(os.Stdout, "[LinkStat Returned]", ls.ResponseCode, ls.ResponseText)
+			fmt.Fprintln(os.Stderr, "[LinkStat Returned]", ls.ResponseCode, ls.ResponseText)
 			makeLinkStats(ls)
    	}
 	}
