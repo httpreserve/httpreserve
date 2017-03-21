@@ -16,33 +16,25 @@ const DEBUG_RESPONSE = false
 // At least for testing we're going to be doing a limited range
 // of things with our requests. Create a default object to make that
 // easier for us.
-func DefaultSimpleRequest(requrl string) (SimpleRequest, error) {
-	sr, err := CreateSimpleRequest(HEAD, requrl, USE_PROXY, BYTERANGE)
-	if err != nil {
-		return sr, errors.Wrap(err, "default simpleUrl url assignment failed")
-	}
-	return sr, nil
+func DefaultSimpleRequest(requrl *url.URL) SimpleRequest {
+	return CreateSimpleRequest(HEAD, requrl, USE_PROXY, BYTERANGE)
 }
 
 // We want to make handlehttp more useable so let's wrap
 // as much as we can up front and see if that's possible
 // recommended setting for byterange is to maintain the default
 // but the potential to set it manually here is possible
-func CreateSimpleRequest(method string, newUrl string, proxy bool, byterange string) (SimpleRequest, error) {
+func CreateSimpleRequest(method string, requrl *url.URL, proxy bool, byterange string) SimpleRequest {
 	var sr SimpleRequest
 	sr.Method = method
-	reqUrl, err := url.Parse(newUrl)
-	if err != nil {
-		return sr, errors.Wrap(err, "simpleUrl url assignment failed")
-	}
-	sr.ReqUrl = reqUrl
+	sr.ReqUrl = requrl
 	sr.Proxy = proxy
 	if byterange == "" {
 		sr.ByteRange = BYTERANGE
 	} else {
 		sr.ByteRange = byterange
 	}
-	return sr, nil
+	return sr
 }
 
 // Call handlehttp from a SimpleRequest object instead

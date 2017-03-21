@@ -18,14 +18,16 @@ import (
 //hackable uri for saving pages
 //https://web.archive.org/save/https://www.theguardian.com/politics/2017/mar/13/ian-mcewan-clarifies-remarks-likening-brexit-vote-third-reich
 
-func testConnection (reqUrl string) (LinkStats, error) {
+func testConnection (requrl string) (LinkStats, error) {
 	var ls LinkStats
-	u, err := url.Parse(reqUrl)
+	var err error
+
+	req, err := url.Parse(requrl)
 	if err != nil {
 		return ls, errors.Wrap(err, "url parse failed")
 	}
 
-	switch u.Scheme {
+	switch req.Scheme {
 	case "ftp":
 		/*_, err := handleftp(request)
 		if err != nil {
@@ -34,20 +36,20 @@ func testConnection (reqUrl string) (LinkStats, error) {
 	case "http":
 		fallthrough
 	case "https":
-		sr, err := DefaultSimpleRequest(reqUrl)
-		if err != nil {
-			return ls, errors.Wrap(err, "defaultSimpleRequest failed")
-		}
-		ls, err := httpFromSimpleRequest(sr)
+		ls, err = httpFromSimpleRequest(DefaultSimpleRequest(req))
 		if err != nil {
 			return ls, errors.Wrap(err, "handlehttp() failed")
 		}
+		ls.Link = req
 		return ls, nil
 	case "":
+		ls.Link = req
 		return ls, errors.New(ERR_BLANK_PROTOCOL)		
 	default:
-		return ls, errors.Wrap(errors.New(ERR_UNKNOWN_PROTOCOL), u.Scheme)
+		ls.Link = req
+		return ls, errors.Wrap(errors.New(ERR_UNKNOWN_PROTOCOL), req.Scheme)
 	}
+	ls.Link = req
 	return ls, nil
 }
 

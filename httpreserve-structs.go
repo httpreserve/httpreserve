@@ -31,7 +31,7 @@ type SimpleRequest struct {
 // Can be fairly liberal in its expansion
 type LinkStats struct {
 	FileName 							string	// If a filename is provided
-	Link 									string
+	Link 									*url.URL
 	ResponseCode 						int
 	ResponseText 						string
 	ScreenShot 							string 	// HREF to screenshot
