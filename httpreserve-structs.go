@@ -39,7 +39,8 @@ type LinkStats struct {
 	InternetArchiveResponseCode 	int
 	InternetArchiveResponseText 	string
 	ArchiveNow							bool
-	NoProtocol							bool
+	ProtocolError						bool
+	ProtocolErrorMessage				string
 
 	//for debug
 	header *http.Header

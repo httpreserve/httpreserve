@@ -81,14 +81,21 @@ func looper() {
 			//send through to our function tog get stats...
 			ls, err := LinkStat(scanner.Text())
 			if err != nil {
-				//report error, go no further...
-				fmt.Fprintln(os.Stderr, "[x]", errors.Wrap(err, "LinkStat failed"))			
-			} else {
-				//TODO: correct scheme, e.g. for www. no http
-				//TODO: if ftp, find alternative way to handle...
-				//TODO: if response positive, populate LS further
-				fmt.Fprintln(os.Stdout, "[success]", ls.ResponseCode, ls.ResponseText)
-	      }
+				//rreport error in some way...
+				ls.ProtocolError = true
+				switch err.Error() {
+				case ERR_BLANK_PROTOCOL:
+					ls.ProtocolErrorMessage = ERR_BLANK_PROTOCOL 
+				case ERR_UNKNOWN_PROTOCOL:
+					ls.ProtocolErrorMessage = ERR_UNKNOWN_PROTOCOL
+				default:
+					//TODO: Consider a log file
+					//TODO: correct scheme, e.g. for www. add http://
+					fmt.Fprintln(os.Stderr, "[LinkStat Fail]", errors.Wrap(err, "LinkStat failed"))
+				}
+			}
+			//TODO: Positive or negative... populate LS
+			fmt.Fprintln(os.Stdout, "[LinkStat Success]", ls.ResponseCode, ls.ResponseText)
    	}
    	fmt.Println("----\n\n")
 	}
