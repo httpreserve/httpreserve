@@ -24,3 +24,6 @@ http://www.bbc.co.uk/iplayer/episode/b08k64kd/eastenders-20032017
 www.bbc.co.uk/iplayer/episode/b08k64kd/eastenders-20032017
 http://github.com/exponential-decay/droid-sqlite-analysis
 http://web.archive.org/web/20070103112847/http://www.infoceptor.com/
+http://web.archive.org/web/20161202130959/http://nintendoweb.com/
+http://web.archive.org/web/20161006052311/http://nintendoweb.com/
+https://web.archive.org/web/20161023054907/http://www.obakemono.com/
