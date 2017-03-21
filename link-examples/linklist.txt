@@ -17,3 +17,6 @@ http://webarchive.nationalarchives.gov.uk/20160429103827/http://potatoes.ahdb.or
 http://yp.direct.gov.uk/cyberbullying/
 https://www.webarchive.org.uk/wayback/archive/20131122163052/http://www.openplanetsfoundation.org/blogs/ross-spencer
 http://openpreservation.org/blogs/ross-spencer
+https://stackoverflow.com/users/login
+http://stackoverflow.com/users/authenticate
+http://getstatuscode.com/451
