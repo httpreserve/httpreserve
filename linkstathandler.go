@@ -4,6 +4,7 @@ import (
 	"os"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 // Internal function used to finalize a struct to be used
@@ -43,8 +44,18 @@ func makeLinkStats(ls LinkStats) {
 			fmt.Println(earliestIA.Link, earliestIA.ResponseCode, earliestIA.ResponseText)
 
 			fmt.Println()
-			//fmt.Printf("\n%+v\n\n", earliestIA.header.Get("Link"))
-			fmt.Printf("\n%+v\n\n", earliestIA.header)
+
+			iaLinkData := earliestIA.header.Get("Link")
+			iaLinkInfo := strings.Split(iaLinkData, ";")
+
+			for _, m := range iaLinkInfo {
+				fmt.Println(strings.Trim(m, " "))
+			}
+
+			//fmt.Printf("\n\n%s\n\n", iaLinkInfo)
+			
+
+			//fmt.Printf("\n%+v\n\n", earliestIA.header)
 
 			//for _, m := range earliestIA.header {
 			//	fmt.Println(m)
