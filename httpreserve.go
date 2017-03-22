@@ -113,6 +113,11 @@ func main() {
 
 	looper()
 
+	//server here
+	//consider two servers
+	//one - basic return LinkStats
+	//two - assemble reports plus other information
+
 	//oneoff save examples...
 
 	//https://web.archive.org/save/http://www.bbc.com/news
