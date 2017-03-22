@@ -7,3 +7,6 @@ http://www.theweek.co.uk/69316/peaky-blinders-filming-underway-as-season-4-prepa
 http://web.archive.org/web/20070103112847/http://www.infoceptor.com/
 https://www.microsoft.com
 http://www.nationalarchives.gov.uk/
+https://github.com/500
+https://github.com/exponential-decay/awesome-repository
+https://github.com/exponential-decay/404

@@ -11,6 +11,22 @@ import (
 const IA_ROOT = "http://web.archive.org"
 const IA_SAVE = "/save/"		//e.g. https://web.archive.org/save/http://www.bbc.com/news
 const IA_WEB = "/web/"			//e.g. http://web.archive.org/web/20161104020243/http://exponentialdecayxxxx.co.uk/#
+const IA_REL = "rel="
+
+// Memento returns various relationship attributes
+// These are the ones observed so far in this work.
+// Rather than separating the attributes, use whole string.
+const REL_FIRST = "rel=\"first memento\""					// syn: first, at least two
+const REL_NEXT = "rel=\"next memento\""					// syn: at least three
+const REL_LAST = "rel=\"last memento\""					// syn: last, at least three
+const REL_FIRST_LAST = "rel=\"first last memento\""	// syn: only
+const REL_NEXT_LAST = "rel=\"next last memento\""		// syn: second, and last
+const REL_PREV_LAST = "rel=\"prev memento\""				// syn: at least three
+const REL_PREV_FIRST = "rel=\"prev first memento\""	// syn: previous, and first, only two
+
+// List of items to check against when parsing header attributes
+var IA_REL_LIST = [...]string{REL_FIRST, REL_NEXT, REL_LAST, REL_FIRST_LAST, 
+		REL_NEXT_LAST, REL_PREV_LAST, REL_PREV_FIRST}
 
 //Explanation: https://andrey.nering.com.br/2015/how-to-format-date-and-time-with-go-lang/
 //Golang Date Formatter: http://fuckinggodateformat.com/

@@ -97,8 +97,11 @@ func looper() {
 				}
 			}
 			//TODO: Positive or negative... populate LS
-			fmt.Fprintln(os.Stderr, "[LinkStat Returned]", ls.ResponseCode, ls.ResponseText)
-			makeLinkStats(ls)
+			ls, err = makeLinkStats(ls)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "[Make LinkStat]", err)
+			}
+			fmt.Fprintln(os.Stderr, "[LinkStat Returned]", ls.ResponseCode, ls.ResponseText, ls.InternetArchiveResponseCode, ls.InternetArchiveResponseText)
    	}
 	}
 	if err := scanner.Err(); err != nil {

@@ -35,7 +35,7 @@ type LinkStats struct {
 	ResponseCode 						int
 	ResponseText 						string
 	ScreenShot 							string 	// HREF to screenshot
-	InternetArchiveLink 				string
+	InternetArchiveLinkLatest		string
 	InternetArchiveLinkEarliest	string	// Earliest link in Internet Archive
 	InternetArchiveResponseCode 	int
 	InternetArchiveResponseText 	string
