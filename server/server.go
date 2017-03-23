@@ -32,9 +32,15 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodOptions:
 		handleOptions(w, r)
 		return
+	case http.MethodHead:
+		fallthrough
+	case http.MethodGet:
+		fmt.Fprintln(w, "Deliver static page?")	
+		return	
+	default:
+		fmt.Fprintln(w, r.Method + " is unsupported from root.")
+		return
 	}
-
-	fmt.Fprintln(w, "This is not the primary entry point but it is the index.")
 }
 
 // Logger middleware to return information to stderr we're
