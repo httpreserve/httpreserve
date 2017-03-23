@@ -85,8 +85,6 @@ func faviconHandler(w http.ResponseWriter, r *http.Request) {
 func configureDefault() http.Handler {
 
 	fs := http.FileServer(http.Dir("static"))
-
-
 	h := http.NewServeMux()
 
 	h.HandleFunc("/favicon.ico", faviconHandler)
