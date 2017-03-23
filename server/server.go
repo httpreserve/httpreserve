@@ -28,6 +28,12 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	switch r.Method {
+	case http.MethodOptions:
+		handleOptions(w, r)
+		return
+	}
+
 	fmt.Fprintln(w, "This is not the primary entry point but it is the index.")
 }
 
