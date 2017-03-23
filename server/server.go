@@ -12,11 +12,23 @@ func httpreserve(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Some information: %s\n", "gah!")
 }
 
+// 404 response handler for all non supported function
+func NotFound(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.WriteHeader(http.StatusNotFound)
+	fmt.Fprintln(w, "Sorry, this is not a supported function for this application.")
+}
+
 // Return a 404: TODO: May discard in favour of more friendly
 // response for the user...
-func fourohfour(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(404)
-	fmt.Fprintln(w, "This is not the primary entry point.")
+func indexhandler(w http.ResponseWriter, r *http.Request) {
+	//w.WriteHeader(404)
+	if r.URL.String() != "/" {
+		NotFound(w, r)
+		return
+	}
+
+	fmt.Fprintln(w, "This is not the primary entry point but it is the index.")
 }
 
 // Logger middleware to return information to stderr we're
@@ -48,12 +60,18 @@ func newHeaderSetter(key, val string) func(http.Handler) http.Handler {
 	}
 }
 
+// Handle the return of favicon when requested by client
+func faviconHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "ico/favicon.ico")
+}
+
 // Configure our default server mechanism for httpreserve
 func configureDefault() http.Handler {
 	h := http.NewServeMux()
 
+	h.HandleFunc("/favicon.ico", faviconHandler)
 	h.HandleFunc("/httpreserve", httpreserve)
-	h.HandleFunc("/", fourohfour) 
+	h.HandleFunc("/", indexhandler) 
 
 	// Middleware chain to handle various generic HTTP functions
 	// TODO: Learn what other middleware we may need...
