@@ -6,3 +6,5 @@ h4 { font-size: 16px;}
 
 input.link { display: block; margin: auto; width: 500px; }
 input.button  { display: block; margin: auto; }
+
+footer { display: block; bottom: 0; margin-bottom: 20px; position: fixed; }
