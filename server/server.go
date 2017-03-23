@@ -12,7 +12,8 @@ const FAVICON_LOC = "static/ico/favicon.ico"
 
 // Primary handler for httpreserve requests
 func httpreserve(w http.ResponseWriter, r *http.Request) { 
-	fmt.Fprintf(w, "Some information: %s\n", "gah!")
+	handleHttpreserve(w, r)
+	return
 }
 
 // 404 response handler for all non supported function
@@ -36,6 +37,8 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 		handleOptions(w, r)
 		return
 	case http.MethodHead:
+		fallthrough
+	case http.MethodPost:
 		fallthrough
 	case http.MethodGet:
       t, _ := template.ParseFiles("static/form/index.htm")
