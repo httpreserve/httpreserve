@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"html/template"
 	"github.com/justinas/alice"
 )
+
+const FAVICON_LOC = "static/ico/favicon.ico"
 
 // Primary handler for httpreserve requests
 func httpreserve(w http.ResponseWriter, r *http.Request) { 
@@ -35,7 +38,8 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodHead:
 		fallthrough
 	case http.MethodGet:
-		fmt.Fprintln(w, "Deliver static page?")	
+      t, _ := template.ParseFiles("static/form/index.htm")
+      t.Execute(w, nil)
 		return	
 	default:
 		fmt.Fprintln(w, r.Method + " is unsupported from root.")
@@ -74,16 +78,21 @@ func newHeaderSetter(key, val string) func(http.Handler) http.Handler {
 
 // Handle the return of favicon when requested by client
 func faviconHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "ico/favicon.ico")
+	http.ServeFile(w, r, FAVICON_LOC)
 }
 
 // Configure our default server mechanism for httpreserve
 func configureDefault() http.Handler {
+
+	fs := http.FileServer(http.Dir("static"))
+
+
 	h := http.NewServeMux()
 
 	h.HandleFunc("/favicon.ico", faviconHandler)
 	h.HandleFunc("/httpreserve", httpreserve)
 	h.HandleFunc("/", indexhandler) 
+	h.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	// Middleware chain to handle various generic HTTP functions
 	// TODO: Learn what other middleware we may need...
