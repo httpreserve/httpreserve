@@ -14,13 +14,13 @@
 This service will tell you if an internet archive link exists and give you a mechanism to save it as you wish.
 <br/>
 <br/>
-<form action="javascript:httpreserve()">
-	<input class="link" type="text" name="hyperlink" value="http://example.com/">
+<form action="javascript:httpreserve()" method="post" id="abc">
+	<input class="link" type="text" name="url" value="http://example.com/">
 	<br/>
    <input class="button" type="submit" value="httpreserve">
 </form>
 <br/><br/>
-<div id="httpreserve-analysis"/>
+<pre id="httpreserve-analysis"/>
 </p>
 <footer>
 	A project by <a href="https://twitter.com/beet_keeper" alt="@beet_keeper on Twitter">@beet_keeper</a>
