@@ -24,11 +24,13 @@ func handleHttpreserve(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		lookup, _ := url.ParseQuery(r.URL.RawQuery)
-		fmt.Fprintln(w, GenerateLinkStats(lookup[requestedURL][0]))
+		js, _ := GenerateLinkStats(lookup[requestedURL][0])
+		fmt.Fprintln(w, js)
 		return
 	case http.MethodPost:
 		r.ParseForm()
-		fmt.Fprintln(w, GenerateLinkStats(r.Form.Get(requestedURL)))
+		js, _ := GenerateLinkStats(r.Form.Get(requestedURL))
+		fmt.Fprintln(w, js)
 		return
 	}
 }

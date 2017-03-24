@@ -1,23 +1,12 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/pkg/errors"
 	"net/url"
-	"os"
 )
 
-//ftp: ftp://exponentialdecay.co.uk/
-//http; http://exponentialdecay.co.uk
-//https: https://github.com/exponential-decay
-
-//hackable uri for archive.org, finds closest to date set, pre or post
-//internet archive uri: http://web.archive.org/web/20161104020243/http://exponentialdecay.co.uk/#
-
-//hackable uri for saving pages
-//https://web.archive.org/save/https://www.theguardian.com/politics/2017/mar/13/ian-mcewan-clarifies-remarks-likening-brexit-vote-third-reich
-
+// Httpreserves primary handler for different protocols
 func testConnection(requrl string) (LinkStats, error) {
 	var ls LinkStats
 	var err error
@@ -55,6 +44,8 @@ func testConnection(requrl string) (LinkStats, error) {
 	return ls, nil
 }
 
+// Function that wraps testconnection, we may refactor this at
+// some point as it doesn't do a lot in its own right.
 func linkStat(url string) (LinkStats, error) {
 	var ls LinkStats
 	ls, err := testConnection(url)
@@ -63,75 +54,28 @@ func linkStat(url string) (LinkStats, error) {
 
 // GenerateLinkStats is used to return a JSON object for a URL
 // specified in link variable passed to the function.
-func GenerateLinkStats(link string) string {
+func GenerateLinkStats(link string) (LinkStats, error) {
 	ls, err := linkStat(link)
 	if err != nil {
 		ls, _ = manageLinkStatErrors(ls, err)
+		//TODO: consider what to do with manageLinkStatErrors here...
 	}
-
 	// Positive or negative result, populate LS structure
 	ls, err = makeLinkStats(ls, err)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "[Make LinkStat]", err)
+		if err.Error() == errorNoIALink {
+			// we can ignore this, not a fatal error
+		} else {
+			return ls, err
+		}
 	}
+	return ls, nil
+}
 
-	//return ls, err here and then have a second function for JSON
-
-	// Output the result of our test, format in JSON
+// MakeLinkStatsJSON will output a LinkStats struct as 
+// a JSON object to be used in our applications...
+func MakeLinkStatsJSON(ls LinkStats) string {
 	js, _ := makeLinkStatJSON(ls)
 	return js
 }
 
-//might be useful... stdin
-func stdiolooper() {
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		fmt.Println(scanner.Text()) // Println will add back the final '\n'
-	}
-	if err := scanner.Err(); err != nil {
-		fmt.Fprintln(os.Stderr, "[stdio]", errors.Wrap(err, "read failed"))
-	}
-}
-
-func looper() {
-
-	file, err := os.Open("link-examples/linkswork.txt")
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "[File Open]", errors.Wrap(err, "file open failed"))
-		os.Exit(1)
-	}
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		if scanner.Text() != "" {
-			//send through to our function tog get stats...
-			link := scanner.Text()
-			GenerateLinkStats(link)
-		}
-	}
-	if err := scanner.Err(); err != nil {
-		fmt.Fprintln(os.Stderr, "[Scan Error]", errors.Wrap(err, "read http links failed"))
-	}
-}
-
-func main() {
-	DefaultServer("2040")
-}
-
-func oldmain() {
-	looper()
-
-	//server here
-	//consider two servers
-	//one - basic return LinkStats
-	//two - assemble reports plus other information
-
-	//oneoff save examples...
-
-	//https://web.archive.org/save/http://www.bbc.com/news
-	//https://web.archive.org/save/https://www.theguardian.com/international
-	/*ls, err := handlehttp("https://web.archive.org/save/https://www.theguardian.com/international")
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(ls.header, ls.ResponseText, ls.ResponseCode)*/
-}

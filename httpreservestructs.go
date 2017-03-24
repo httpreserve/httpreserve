@@ -45,6 +45,8 @@ type LinkStats struct {
 	ProtocolErrorMessage        string
 
 	// For debug
+	status string
+	statuscode int
 	header *http.Header
 	link   *url.URL
 }

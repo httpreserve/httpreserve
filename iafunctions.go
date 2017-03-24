@@ -9,6 +9,11 @@ import (
 )
 
 const iaRoot = "http://web.archive.org"
+const iaBeta = "http://web-beta.archive.org"
+
+const iaSRoot = "https://web.archive.org"
+const iaSBeta = "https://web-beta.archive.org"
+
 const iaSave = "/save/" //e.g. https://web.archive.org/save/http://www.bbc.com/news
 const iaWeb = "/web/"   //e.g. http://web.archive.org/web/20161104020243/http://exponentialdecayxxxx.co.uk/#
 const iaRel = "rel="
@@ -71,9 +76,6 @@ func constructURL(iadate string, archiveurl string) (*url.URL, error) {
 // submit it to the Internet Archive SaveNow function
 func MakeSaveURL(link string) string {
 	//e.g. https://web.archive.org/save/http://www.bbc.com/news
-	if strings.Contains(link, iaRoot) {
-		return errorIAExists // validity of error? seems useful.
-	}
 	return iaRoot + iaSave + link
 }
 
@@ -97,4 +99,13 @@ func GetSavedURL(resp http.Response) (*url.URL, error) {
 		return &url.URL{}, errors.Wrap(err, "creation of URL from http response failed.")
 	}
 	return u, nil
+}
+
+// Test the URL to make sure it's not already an internet archive link
+func isIA(link string) bool {
+	if strings.Contains(link, iaRoot) || strings.Contains(link, iaBeta) ||
+		strings.Contains(link, iaSRoot) || strings.Contains(link, iaSBeta) {
+		return true
+	}
+	return false
 }
