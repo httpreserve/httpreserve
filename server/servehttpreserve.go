@@ -7,6 +7,8 @@ import (
 	"net/http/httputil"
 )
 
+const REQUESTED_URL = "url"
+
 func handleHttpreserve(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Return server httpreserve analysis here.\n")
 	req, _ := httputil.DumpRequest(r, false)
@@ -14,9 +16,8 @@ func handleHttpreserve(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		m, _ := url.ParseQuery(r.URL.String())
-		fmt.Fprintf(w, "\n\n%+v\n\n", m)
-		//fmt.Println(m["k"][0])
+		lookup, _ := url.ParseQuery(r.URL.RawQuery)
+		fmt.Fprintln(w, lookup[REQUESTED_URL][0])
 		return
 	case http.MethodPost:
 		r.ParseForm()
