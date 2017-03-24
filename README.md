@@ -1,14 +1,13 @@
 <div>
 <p align="center">
-<a href="https://github.com/exponential-decay/httpreserve#logo">
 <img id="logo" src="https://github.com/exponential-decay/httpreserve/raw/master/src/images/httpreserve-logo.png" alt="httpreserve"/>
-</a>
-<br/>
-Work in Progress
 </p>
 </div>
 
 # httpreserve
+[![Build Status](https://travis-ci.org/exponential-decay/httpreserve.svg?branch=master)](https://travis-ci.org/exponential-decay/httpreserve)
+[![GoDoc](https://godoc.org/github.com/exponential-decay/httpreserve?status.svg)](https://godoc.org/github.com/exponential-decay/httpreserve)
+[![Go Report Card](https://goreportcard.com/badge/github.com/exponential-decay/httpreserve)](https://goreportcard.com/report/github.com/exponential-decay/httpreserve)
 
 Placeholder text to describe tool further. 
 
