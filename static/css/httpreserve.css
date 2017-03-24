@@ -1,0 +1,11 @@
+body { min-width:750px; font-family: arial, verdana; font-size: 10px; margin-bottom: 20px}
+
+div.wrap { margin: 0 auto ; width:715px; }
+div.layout { margin-top: 50px }
+
+h4 { font-size: 16px;}
+
+input.link { display: block; margin: auto; width: 500px; }
+input.button  { display: block; margin: auto; }
+
+footer { display: block; bottom: 0; margin-bottom: 20px; position: fixed; }

@@ -109,9 +109,9 @@ func looper() {
 	}
 }
 
-func main() {
+//func main() {
 
-	looper()
+//	looper()
 
 	//server here
 	//consider two servers
@@ -127,5 +127,5 @@ func main() {
 		fmt.Println(err)
 	}
 	fmt.Println(ls.header, ls.ResponseText, ls.ResponseCode)*/
-}
+//}
 
