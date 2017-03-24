@@ -31,20 +31,22 @@ type SimpleRequest struct {
 // Can be fairly liberal in its expansion
 type LinkStats struct {
 	FileName 							string	// If a filename is provided
-	Link 									*url.URL
+	Link 									string
 	ResponseCode 						int
 	ResponseText 						string
 	ScreenShot 							string 	// HREF to screenshot
 	InternetArchiveLinkLatest		string
 	InternetArchiveLinkEarliest	string	// Earliest link in Internet Archive
+	InternetArchiveSaveLink			string	// Link to use to save from the Internet
 	InternetArchiveResponseCode 	int
 	InternetArchiveResponseText 	string
-	ArchiveNow							bool		// Have we saved the page or not
+	Archived								bool		// Has the Internet Archive saved the page or not?
 	ProtocolError						bool
 	ProtocolErrorMessage				string
 
 	// For debug
 	header *http.Header
+	link   *url.URL	
 }
 
 // NTLM (NT Lan Management) Consts

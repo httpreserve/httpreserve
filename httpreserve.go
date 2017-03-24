@@ -42,20 +42,40 @@ func testConnection (requrl string) (LinkStats, error) {
 		}
 		return ls, nil
 	case "":
-		ls.Link = req
+		ls.link = req
+		ls.Link = req.String()
 		return ls, errors.New(ERR_BLANK_PROTOCOL)		
 	default:
-		ls.Link = req
+		ls.link = req
+		ls.Link = req.String()
 		return ls, errors.Wrap(errors.New(ERR_UNKNOWN_PROTOCOL), req.Scheme)
 	}
-	ls.Link = req
+	ls.link = req
+	ls.Link = req.String()
 	return ls, nil
 }
 
-func LinkStat(url string) (LinkStats, error) {
+func linkStat(url string) (LinkStats, error) {
 	var ls LinkStats
 	ls, err := testConnection(url)
 	return ls, err
+}
+
+func GenerateLinkStats(link string) string {
+	ls, err := linkStat(link)
+	if err != nil {
+		ls, _ = manageLinkStatErrors(ls, err)
+	}
+
+	// Positive or negative result, populate LS structure
+	ls, err = makeLinkStats(ls, err)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "[Make LinkStat]", err)
+	}
+
+	// Output the result of our test, format in JSON
+	js, _ := makeLinkStatJson(ls)
+	return js
 }
 
 //might be useful... stdin
@@ -81,27 +101,7 @@ func looper() {
 		if scanner.Text() != "" {
 			//send through to our function tog get stats...
 			link := scanner.Text()
-			ls, err := LinkStat(link)
-			if err != nil {
-				//rreport error in some way...
-				ls.ProtocolError = true
-				switch err.Error() {
-				case ERR_BLANK_PROTOCOL:
-					ls.ProtocolErrorMessage = ERR_BLANK_PROTOCOL 
-				case ERR_UNKNOWN_PROTOCOL:
-					ls.ProtocolErrorMessage = ERR_UNKNOWN_PROTOCOL
-				default:
-					//TODO: Consider a log file
-					//TODO: correct scheme, e.g. for www. add http://
-					fmt.Fprintln(os.Stderr, "[LinkStat Fail]", errors.Wrap(err, "LinkStat failed"))
-				}
-			}
-			//TODO: Positive or negative... populate LS
-			ls, err = makeLinkStats(ls)
-			if err != nil {
-				fmt.Fprintln(os.Stderr, "[Make LinkStat]", err)
-			}
-			fmt.Fprintln(os.Stderr, "[LinkStat Returned]", ls.ResponseCode, ls.ResponseText, ls.InternetArchiveResponseCode, ls.InternetArchiveResponseText)
+			GenerateLinkStats(link)
    	}
 	}
 	if err := scanner.Err(); err != nil {
@@ -109,13 +109,11 @@ func looper() {
 	}
 }
 
-
-
-func oldmain() {
+func main() {
 	DefaultServer("2040")
 }
 
-func main() {
+func oldmain() {
 	looper()
 
 	//server here

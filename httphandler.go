@@ -88,7 +88,8 @@ func handlehttp(method string, requrl *url.URL, proxy bool, byterange string) (L
 	ls.ResponseCode = resp.StatusCode
 	ls.ResponseText = http.StatusText(resp.StatusCode)
 	ls.header = &resp.Header
-   ls.Link = requrl
+   ls.link = requrl
+   ls.Link = requrl.String()
 
 	if checkNTLM(resp, requrl) {
 		resp.Body.Close()

@@ -67,6 +67,15 @@ func constructUrl(iadate string, archiveurl string) (*url.URL, error) {
 	return newurl, nil
 }
 
+// Create a URL that will enable us to submit it to the Internet Archive
+func makeSaveUrl(link string) string {
+	//e.g. https://web.archive.org/save/http://www.bbc.com/news
+	if strings.Contains(link, IA_ROOT) {
+		return ERR_ALREADY_IA  						// validity of error? seems useful.
+	}
+	return IA_ROOT + IA_SAVE + link
+}
+
 // Utilize the methods across the package to submit a URL to the 
 // internet archive to retrieve a saved URL that we can use.
 func SubmitToInternetarchive() {
@@ -85,4 +94,3 @@ func GetSavedURL(resp http.Response) (*url.URL, error) {
 	}
 	return u, nil
 }
-
