@@ -1,12 +1,12 @@
 package main
 
 import (
-	"os"
-	"fmt"
 	"bufio"
-	"net/url"
+	"fmt"
 	"github.com/pkg/errors"
-   )
+	"net/url"
+	"os"
+)
 
 //ftp: ftp://exponentialdecay.co.uk/
 //http; http://exponentialdecay.co.uk
@@ -18,7 +18,7 @@ import (
 //hackable uri for saving pages
 //https://web.archive.org/save/https://www.theguardian.com/politics/2017/mar/13/ian-mcewan-clarifies-remarks-likening-brexit-vote-third-reich
 
-func testConnection (requrl string) (LinkStats, error) {
+func testConnection(requrl string) (LinkStats, error) {
 	var ls LinkStats
 	var err error
 
@@ -36,7 +36,7 @@ func testConnection (requrl string) (LinkStats, error) {
 	case "http":
 		fallthrough
 	case "https":
-		ls, err = httpFromSimpleRequest(DefaultSimpleRequest(req))
+		ls, err = httpFromSimpleRequest(defaultSimpleRequest(req))
 		if err != nil {
 			return ls, errors.Wrap(err, "handlehttp() failed")
 		}
@@ -44,11 +44,11 @@ func testConnection (requrl string) (LinkStats, error) {
 	case "":
 		ls.link = req
 		ls.Link = req.String()
-		return ls, errors.New(ERR_BLANK_PROTOCOL)		
+		return ls, errors.New(errorBlankProtocol)
 	default:
 		ls.link = req
 		ls.Link = req.String()
-		return ls, errors.Wrap(errors.New(ERR_UNKNOWN_PROTOCOL), req.Scheme)
+		return ls, errors.Wrap(errors.New(errorUnknownProtocol), req.Scheme)
 	}
 	ls.link = req
 	ls.Link = req.String()
@@ -61,6 +61,8 @@ func linkStat(url string) (LinkStats, error) {
 	return ls, err
 }
 
+// GenerateLinkStats is used to return a JSON object for a URL
+// specified in link variable passed to the function.
 func GenerateLinkStats(link string) string {
 	ls, err := linkStat(link)
 	if err != nil {
@@ -73,8 +75,10 @@ func GenerateLinkStats(link string) string {
 		fmt.Fprintln(os.Stderr, "[Make LinkStat]", err)
 	}
 
+	//return ls, err here and then have a second function for JSON
+
 	// Output the result of our test, format in JSON
-	js, _ := makeLinkStatJson(ls)
+	js, _ := makeLinkStatJSON(ls)
 	return js
 }
 
@@ -91,7 +95,7 @@ func stdiolooper() {
 
 func looper() {
 
-	file, err := os.Open("link-examples/linkswork.txt") 
+	file, err := os.Open("link-examples/linkswork.txt")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "[File Open]", errors.Wrap(err, "file open failed"))
 		os.Exit(1)
@@ -102,7 +106,7 @@ func looper() {
 			//send through to our function tog get stats...
 			link := scanner.Text()
 			GenerateLinkStats(link)
-   	}
+		}
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Fprintln(os.Stderr, "[Scan Error]", errors.Wrap(err, "read http links failed"))
@@ -131,4 +135,3 @@ func oldmain() {
 	}
 	fmt.Println(ls.header, ls.ResponseText, ls.ResponseCode)*/
 }
-

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/pkg/errors"
-	"encoding/base64"
 	"crypto/tls"
+	"encoding/base64"
+	"github.com/pkg/errors"
 	"net/http"
 	"net/url"
 )
@@ -35,7 +35,7 @@ func returnProxyClient(req *http.Request) (*http.Client, error) {
 
 	transport.ProxyConnectHeader = req.Header
 
-	c = &http.Client{Transport: transport}	
+	c = &http.Client{Transport: transport}
 
 	return c, nil
 }

@@ -2,22 +2,22 @@ package main
 
 import (
 	"fmt"
+	"github.com/justinas/alice"
+	"html/template"
 	"log"
 	"net/http"
-	"html/template"
-	"github.com/justinas/alice"
 )
 
-const FAVICON_LOC = "static/ico/favicon.ico"
+const faviconLocation = "static/ico/favicon.ico"
 
 // Primary handler for httpreserve requests
-func httpreserve(w http.ResponseWriter, r *http.Request) { 
+func httpreserve(w http.ResponseWriter, r *http.Request) {
 	handleHttpreserve(w, r)
 	return
 }
 
 // 404 response handler for all non supported function
-func NotFound(w http.ResponseWriter, r *http.Request) {
+func notFound(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusNotFound)
 	fmt.Fprintln(w, "Sorry, this is not a supported function for this application.")
@@ -28,7 +28,7 @@ func NotFound(w http.ResponseWriter, r *http.Request) {
 func indexhandler(w http.ResponseWriter, r *http.Request) {
 	//w.WriteHeader(404)
 	if r.URL.String() != "/" {
-		NotFound(w, r)
+		notFound(w, r)
 		return
 	}
 
@@ -41,11 +41,11 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		fallthrough
 	case http.MethodGet:
-      t, _ := template.ParseFiles("static/form/index.htm")
-      t.Execute(w, nil)
-		return	
+		t, _ := template.ParseFiles("static/form/index.htm")
+		t.Execute(w, nil)
+		return
 	default:
-		fmt.Fprintln(w, r.Method + " is unsupported from root.")
+		fmt.Fprintln(w, r.Method+" is unsupported from root.")
 		return
 	}
 }
@@ -81,7 +81,7 @@ func newHeaderSetter(key, val string) func(http.Handler) http.Handler {
 
 // Handle the return of favicon when requested by client
 func faviconHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, FAVICON_LOC)
+	http.ServeFile(w, r, faviconLocation)
 }
 
 // Configure our default server mechanism for httpreserve
@@ -92,27 +92,27 @@ func configureDefault() http.Handler {
 
 	h.HandleFunc("/favicon.ico", faviconHandler)
 	h.HandleFunc("/httpreserve", httpreserve)
-	h.HandleFunc("/", indexhandler) 
+	h.HandleFunc("/", indexhandler)
 	h.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	// Middleware chain to handle various generic HTTP functions
 	// TODO: Learn what other middleware we may need...
-	middleware_chain := alice.New(
-		newHeaderSetter("Server", "exponentialDK-httpreserve/0.0.0"),	// USERAGENT IN MAIN PACKAGE
+	middlewareChain := alice.New(
+		newHeaderSetter("Server", "exponentialDK-httpreserve/0.0.0"), // USERAGENT IN MAIN PACKAGE
 		logger,
 	).Then(h)
 
-	return middleware_chain
+	return middlewareChain
 }
 
 // References contributing to this code...
 // https://cryptic.io/go-http/
 // https://github.com/justinas/alice
 
-// Standup a default server for the httpreserve resolver
-// service to be queried by our other apps.
+// DefaultServer is our call to standup a default server
+// for the httpreserve resolver service to  be queried by our other apps.
 func DefaultServer(port string) {
 	mw := configureDefault()
-	err := http.ListenAndServe(":" + port, mw)
+	err := http.ListenAndServe(":"+port, mw)
 	log.Fatal(err)
 }

@@ -1,4 +1,4 @@
-package main 
+package main
 
 import (
 	"fmt"
@@ -28,6 +28,6 @@ func TestSavedURL(t *testing.T) {
 	fmt.Println(u)
 }
 
-func TestPlaceHolder(t *testing.T) { 
-	
+func TestPlaceHolder(t *testing.T) {
+
 }

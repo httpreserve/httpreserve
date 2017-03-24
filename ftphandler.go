@@ -1,9 +1,9 @@
-package main 
+package main
 
 import (
-	"os"
 	"fmt"
-	"github.com/dutchcoders/goftp"	
+	"github.com/dutchcoders/goftp"
+	"os"
 )
 
 func handleftp(request string) (LinkStats, error) {
@@ -27,8 +27,8 @@ func handleftp(request string) (LinkStats, error) {
 }
 
 func checkError(err error) {
-    if err != nil {
-        fmt.Println("Fatal error ", err.Error())
-        os.Exit(1)
-    }
+	if err != nil {
+		fmt.Println("Fatal error ", err.Error())
+		os.Exit(1)
+	}
 }
