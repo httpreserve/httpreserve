@@ -41,7 +41,11 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		fallthrough
 	case http.MethodGet:
-		t, _ := template.ParseFiles("static/form/index.htm")
+		t, err := template.ParseFiles("static/form/index.htm")
+		if err != nil {
+			fmt.Fprintf(w, "%+v\n", err)
+			return
+		}
 		t.Execute(w, nil)
 		return
 	default:
