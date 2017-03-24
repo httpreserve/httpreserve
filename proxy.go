@@ -1,4 +1,4 @@
-package main
+package httpreserve
 
 import (
 	"crypto/tls"

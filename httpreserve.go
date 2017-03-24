@@ -1,9 +1,8 @@
-package main
+package httpreserve
 
 import (
-	"fmt"
-	"github.com/pkg/errors"
 	"net/url"
+	"github.com/pkg/errors"
 )
 
 // Httpreserves primary handler for different protocols

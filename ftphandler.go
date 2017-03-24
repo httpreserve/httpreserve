@@ -1,11 +1,13 @@
-package main
+package httpreserve
 
 import (
 	"fmt"
 	"github.com/dutchcoders/goftp"
-	"os"
 )
 
+// handleftp for eventually returning some kind of FTP 
+// response if we're asked to...
+// TODO: lots to still implement here...
 func handleftp(request string) (LinkStats, error) {
 	//var ftp *goftp.FTP
 
@@ -19,16 +21,17 @@ func handleftp(request string) (LinkStats, error) {
 	//goftp.ConnectDbg(
 	//TODO: parse debug messages...
 	if _, err := goftp.ConnectDbg(request); err != nil {
-		panic(err)
+		checkError(err)
 	}
 
 	var ls LinkStats
 	return ls, nil
 }
 
+// Helper function to manage errors...
 func checkError(err error) {
 	if err != nil {
-		fmt.Println("Fatal error ", err.Error())
-		os.Exit(1)
+		fmt.Println("[FTP]", err.Error())
+		return
 	}
 }

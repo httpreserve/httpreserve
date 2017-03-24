@@ -1,4 +1,4 @@
-package main
+package httpreserve
 
 import (
 	"os"
@@ -74,7 +74,7 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 
 			ls = addSaveURL(ls)
 		} else {
-			ls.InternetArchiveSaveLink = errorIAExists
+			ls.InternetArchiveSaveLink = ErrorIAExists
 		}
 	}
 	return ls, nil
