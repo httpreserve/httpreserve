@@ -105,17 +105,14 @@ func configureDefault() http.Handler {
 	return middleware_chain
 }
 
+// References contributing to this code...
+// https://cryptic.io/go-http/
+// https://github.com/justinas/alice
+
 // Standup a default server for the httpreserve resolver
 // service to be queried by our other apps.
 func DefaultServer(port string) {
 	mw := configureDefault()
 	err := http.ListenAndServe(":" + port, mw)
 	log.Fatal(err)
-}
-
-// References contributing to this code...
-// https://cryptic.io/go-http/
-// https://github.com/justinas/alice
-func main() {
-	DefaultServer("2040")
 }

@@ -109,9 +109,14 @@ func looper() {
 	}
 }
 
-//func main() {
 
-//	looper()
+
+func oldmain() {
+	DefaultServer("2040")
+}
+
+func main() {
+	looper()
 
 	//server here
 	//consider two servers
@@ -127,5 +132,5 @@ func looper() {
 		fmt.Println(err)
 	}
 	fmt.Println(ls.header, ls.ResponseText, ls.ResponseCode)*/
-//}
+}
 
