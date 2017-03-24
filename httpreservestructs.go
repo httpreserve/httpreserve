@@ -45,10 +45,10 @@ type LinkStats struct {
 	ProtocolErrorMessage        string
 
 	// For debug
-	status string
+	status     string
 	statuscode int
-	header *http.Header
-	link   *url.URL
+	header     *http.Header
+	link       *url.URL
 }
 
 // NTLM (NT Lan Management) Consts

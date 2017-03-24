@@ -1,23 +1,23 @@
 package httpreserve
 
 import (
-	"os"
-	"fmt"
-	"strings"
-	"net/http"
 	"encoding/json"
-	"net/http/httputil"
+	"fmt"
 	"github.com/pkg/errors"
+	"net/http"
+	"net/http/httputil"
+	"os"
+	"strings"
 )
 
 // GetLSHeader allows us to do some debug on the information
-// returned from the server. First it mocks a response, and 
+// returned from the server. First it mocks a response, and
 // then adds some of our info to it to enable DumpResponse prettyprint
 func GetLSHeader(ls LinkStats) string {
 	var r = http.Response{}
 	r.StatusCode = ls.statuscode
 	r.Status = ls.status
-	r.Header = *ls.header 
+	r.Header = *ls.header
 	req, _ := httputil.DumpResponse(&r, false)
 	return string(req)
 }

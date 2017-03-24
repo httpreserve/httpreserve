@@ -1,8 +1,8 @@
 package httpreserve
 
 import (
-	"net/url"
 	"github.com/pkg/errors"
+	"net/url"
 )
 
 // Httpreserves primary handler for different protocols
@@ -71,10 +71,9 @@ func GenerateLinkStats(link string) (LinkStats, error) {
 	return ls, nil
 }
 
-// MakeLinkStatsJSON will output a LinkStats struct as 
+// MakeLinkStatsJSON will output a LinkStats struct as
 // a JSON object to be used in our applications...
 func MakeLinkStatsJSON(ls LinkStats) string {
 	js, _ := makeLinkStatJSON(ls)
 	return js
 }
-

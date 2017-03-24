@@ -37,10 +37,10 @@ var iaRelList = [...]string{relFirst, relNext, relLast, relFirstLast,
 //Golang Date Formatter: http://fuckinggodateformat.com/
 const datelayout = "20060102150405"
 
-// GetPotentialURLLatest is used to create a URL that we can test for a 404 
-// error or 200 OK. The URL if it works can be used to display to 
-// the user for QA. The URL if it fails, can be used to prompt the 
-// user to save the URL as it is found today. A motivation, even if 
+// GetPotentialURLLatest is used to create a URL that we can test for a 404
+// error or 200 OK. The URL if it works can be used to display to
+// the user for QA. The URL if it fails, can be used to prompt the
+// user to save the URL as it is found today. A motivation, even if
 // there is no saved IA record, to save copy today, even if it is a 404
 // is that the earliest date we can pin on a broken link the
 // better we can satisfy outselves in future that we did all we can.
@@ -52,8 +52,8 @@ func GetPotentialURLLatest(archiveurl string) (*url.URL, error) {
 	return constructURL(latestDate, archiveurl)
 }
 
-// GetPotentialURLEarliest is used to returning the 
-// earliest possible record available in the internet archive. We 
+// GetPotentialURLEarliest is used to returning the
+// earliest possible record available in the internet archive. We
 // can make it easier by using this function here.
 // Example URI we need to create looks like this:
 // web.archive.org/web/{date}/url-to-lookup
@@ -72,7 +72,7 @@ func constructURL(iadate string, archiveurl string) (*url.URL, error) {
 	return newurl, nil
 }
 
-// MakeSaveURL is used to create a URL that will enable us to 
+// MakeSaveURL is used to create a URL that will enable us to
 // submit it to the Internet Archive SaveNow function
 func MakeSaveURL(link string) string {
 	//e.g. https://web.archive.org/save/http://www.bbc.com/news
@@ -81,12 +81,12 @@ func MakeSaveURL(link string) string {
 
 // SubmitToInternetArchive will handle the request and response to
 // and from the Internet Archive for a URL that we wish to save as
-// part of this initiative. 
+// part of this initiative.
 func SubmitToInternetArchive() {
 
 }
 
-// GetSavedURL will help us to retrieve the URL returned by the 
+// GetSavedURL will help us to retrieve the URL returned by the
 // Internet Archive when we've sent a request to the SaveNow function.
 // We've constructed the URL to save ours in the Internet Archive
 // We've submitted the URL via the IA REST API and we've receieved

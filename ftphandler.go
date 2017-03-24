@@ -5,7 +5,7 @@ import (
 	"github.com/dutchcoders/goftp"
 )
 
-// handleftp for eventually returning some kind of FTP 
+// handleftp for eventually returning some kind of FTP
 // response if we're asked to...
 // TODO: lots to still implement here...
 func handleftp(request string) (LinkStats, error) {
