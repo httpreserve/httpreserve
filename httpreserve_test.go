@@ -14,12 +14,12 @@ import (
 //https://perma.cc/48VC-ZS61
 
 func TestIALinkNowDate(t *testing.T) {
-	archiveurl := GetPotentialUrlLatest("http://www.bbc.co.uk/news")
+	archiveurl, _ := GetPotentialURLLatest("http://www.bbc.co.uk/news")
 	fmt.Println(archiveurl)
 }
 
 func TestIALinkEarliestDate(t *testing.T) {
-	archiveurl := GetPotentialUrlEarliest("http://www.bbc.co.uk/news")
+	archiveurl, _ := GetPotentialURLEarliest("http://www.bbc.co.uk/news")
 	fmt.Println(archiveurl)
 }
 
