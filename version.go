@@ -11,13 +11,13 @@ func Version() string {
 
 // VerstionText will return the full text version information
 // e.g. for the useragent to query our websites.
-func VersionText() {
+func VersionText() string {
 	return httpUSERAGENT + Version()
 }
 
 // Dedication will return a dedication string for a colleague's
 // dear brother who was lost on the day I first figured out this
 // code.
-func Dedication() {
+func Dedication() string {
 	return "Dedicated to Matthew Croad."
 } 
