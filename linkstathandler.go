@@ -48,6 +48,9 @@ func GetPrettyResponse(ls LinkStats) string {
 // successful one or not...
 func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 
+	ls.AnalysisVersionText = VersionText()
+	ls.AnalysisVersionNumber = VersionNumber()
+
 	if !ls.ProtocolError {
 
 		iaURLearliest, err := GetPotentialURLEarliest(ls.Link)

@@ -9,6 +9,11 @@ func Version() string {
 	return "0.0.0"
 }
 
+// VersionNumber is a synonym for Version()
+func VersionNumber() string {
+	return Version()
+}
+
 // VersionText will return the full text version information
 // e.g. for the useragent to query our websites.
 func VersionText() string {

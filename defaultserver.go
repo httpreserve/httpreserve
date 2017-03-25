@@ -92,7 +92,7 @@ func configureDefault() http.Handler {
 	// Middleware chain to handle various generic HTTP functions
 	// TODO: Learn what other middleware we may need...
 	middlewareChain := alice.New(
-		newHeaderSetter("Server", "exponentialDK-httpreserve/0.0.0"), // USERAGENT IN MAIN PACKAGE
+		newHeaderSetter("Server", VersionText()), // USERAGENT IN MAIN PACKAGE
 		logger,
 	).Then(h)
 

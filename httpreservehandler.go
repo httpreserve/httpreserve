@@ -20,7 +20,6 @@ func prettyRequest(w http.ResponseWriter, r *http.Request) {
 // Primary handler of all POST or GET requests to httpreserve
 // pretty simple eh?!
 func handleHttpreserve(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "httpreserve analysis:\n\n")
 	switch r.Method {
 	case http.MethodGet:
 		lookup, _ := url.ParseQuery(r.URL.RawQuery)
