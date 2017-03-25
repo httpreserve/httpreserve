@@ -1,7 +1,11 @@
 package httpreserve
 
+const templateFormMethod = "{{template.form.method}}"
+const replacePOST = " method=\"post\" "
+const replaceGET = " method=\"get\" "
+
 // Web entry point for our default server for demo purposes.
-const httpreservePages = `
+var httpreservePages = `
 	<!DOCTYPE html>
 	<html lang="en">
 	<head>
@@ -122,7 +126,7 @@ const httpreservePages = `
 		This service will tell you if an internet archive link exists and give you a mechanism to save it as you wish.
 		<br/>
 		<br/>
-		<form action="javascript:httpreserve()" method="post" id="httpreserve-form">
+		<form action="javascript:httpreserve()" ` + templateFormMethod + ` id="httpreserve-form">
 		   <input class="link" type="text" name="url" value="http://example.com/">
 		   <br/>
 		   <input class="button" type="submit" value="httpreserve">

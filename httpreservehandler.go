@@ -9,6 +9,9 @@ import (
 
 const requestedURL = "url"
 
+// A default value 
+var defaultServerMethod = http.MethodPost
+
 // For debug, we have this function here just in case we need
 // to take a look at our request headers...
 func prettyRequest(w http.ResponseWriter, r *http.Request) {
