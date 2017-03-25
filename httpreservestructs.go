@@ -9,9 +9,6 @@ import (
 const httpGET = http.MethodGet
 const httpHEAD = http.MethodHead
 
-// User-agent to identify code being run
-const httpUSERAGENT = "exponentialDK-httpreserve/0.0.0"
-
 // Default byte-range for initial requests
 const httpBYTERANGE = "bytes=0-0"
 

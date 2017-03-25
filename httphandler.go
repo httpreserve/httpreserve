@@ -55,7 +55,7 @@ func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (L
 	if err != nil {
 		return ls, errors.Wrap(err, "request generation failed")
 	}
-	req.Header.Add("User-Agent", httpUSERAGENT)
+	req.Header.Add("User-Agent", VersionText())
 	req.Header.Add("Range", byterange)
 	req.Header.Add("proxy-Connection", "Keep-Alive")
 
