@@ -48,8 +48,8 @@ type LinkStats struct {
 	link       *url.URL
 
 	// Pretty Debug
-	prettyRequest	string
-	prettyResponse	string
+	prettyRequest  string
+	prettyResponse string
 }
 
 // NTLM (NT Lan Management) Consts

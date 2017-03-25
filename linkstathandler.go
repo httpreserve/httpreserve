@@ -4,19 +4,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
-	"net/url"
 	"net/http"
 	"net/http/httputil"
+	"net/url"
 	"os"
 	"strings"
 )
 
-// GetLSHeader allows us to do some debug on the information
+// GetLinkStatsHeader allows us to do some debug on the information
 // returned from the server. First it mocks a response, and
-// then adds some of our own information to it to enable 
+// then adds some of our own information to it to enable
 // DumpResponse prettyprint. We will consider its use in future
 // As two pretty printed responses have been added to the struct.
-func GetLinkStatHeader(ls LinkStats) string {
+func GetLinkStatsHeader(ls LinkStats) string {
 	var r = http.Response{}
 	r.StatusCode = ls.statuscode
 	r.Status = ls.status
@@ -27,14 +27,18 @@ func GetLinkStatHeader(ls LinkStats) string {
 
 // GetLinkStatsURL returns the originally parsed URL
 // as was sent to the server for a response.
-func GetLinkStatURL(ls LinkStats) *url.URL {
+func GetLinkStatsURL(ls LinkStats) *url.URL {
 	return ls.link
 }
 
+// GetPrettyRequest returns the original request
+// but pretty printed..
 func GetPrettyRequest(ls LinkStats) string {
 	return ls.prettyRequest
 }
 
+// GetPrettyResponse returns the original response
+// but pretty printed.
 func GetPrettyResponse(ls LinkStats) string {
 	return ls.prettyResponse
 }

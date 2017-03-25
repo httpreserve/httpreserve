@@ -1,6 +1,6 @@
 package httpreserve
 
-// Web entry point for our default server for demo purposes. 
+// Web entry point for our default server for demo purposes.
 const httpreservePages = `
 	<!DOCTYPE html>
 	<html lang="en">
@@ -141,4 +141,3 @@ const httpreservePages = `
 	</html> 
 
 `
-

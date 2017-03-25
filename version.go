@@ -9,7 +9,7 @@ func Version() string {
 	return "0.0.0"
 }
 
-// VerstionText will return the full text version information
+// VersionText will return the full text version information
 // e.g. for the useragent to query our websites.
 func VersionText() string {
 	return httpUSERAGENT + Version()
@@ -20,4 +20,4 @@ func VersionText() string {
 // code.
 func Dedication() string {
 	return "Dedicated to Matthew Croad."
-} 
+}

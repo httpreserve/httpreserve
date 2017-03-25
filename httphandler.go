@@ -1,11 +1,11 @@
 package httpreserve
 
 import (
+	"github.com/pkg/errors"
+	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"strings"
-	"net/http"
-	"github.com/pkg/errors"
-	"net/http/httputil"
 )
 
 // At least for testing we're going to be doing a limited range
@@ -62,7 +62,7 @@ func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (L
 	}
 
 	// A mechanism for users to debug their code using Request headers
-	rq, _:= httputil.DumpRequest(req, false)
+	rq, _ := httputil.DumpRequest(req, false)
 	ls.prettyRequest = string(rq)
 
 	resp, err := client.Do(req)
