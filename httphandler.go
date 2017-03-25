@@ -1,17 +1,12 @@
 package httpreserve
 
 import (
-	"fmt"
-	"github.com/pkg/errors"
-	"net/http"
-	"net/http/httputil"
 	"net/url"
-	"os"
 	"strings"
+	"net/http"
+	"github.com/pkg/errors"
+	"net/http/httputil"
 )
-
-const debugRequest = false
-const debugResponse = false
 
 // At least for testing we're going to be doing a limited range
 // of things with our requests. Create a default object to make that
@@ -66,24 +61,18 @@ func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (L
 		}
 	}
 
-	// TODO: Delete in future, maintain for now while getting
-	// to grips with the work we're doing with Golang and this code.
-	if debugRequest {
-		reqdump, _ := httputil.DumpRequest(req, false)
-		fmt.Fprintf(os.Stderr, "%+v\n", reqdump)
-	}
+	// A mechanism for users to debug their code using Request headers
+	rq, _:= httputil.DumpRequest(req, false)
+	ls.prettyRequest = string(rq)
 
 	resp, err := client.Do(req)
 	if err != nil {
 		return ls, errors.Wrap(err, "client request failed")
 	}
 
-	// TODO: Delete in future, maintain for now while getting
-	// to grips with the work we're doing with Golang and this code.
-	if debugResponse {
-		reqdump, _ := httputil.DumpResponse(resp, false)
-		fmt.Fprintf(os.Stderr, "%+v\n", reqdump)
-	}
+	// A mechanism for users to debug their code using Response headers
+	re, _ := httputil.DumpResponse(resp, false)
+	ls.prettyResponse = string(re)
 
 	ls.ResponseCode = resp.StatusCode
 	ls.ResponseText = http.StatusText(resp.StatusCode)
@@ -95,6 +84,7 @@ func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (L
 	ls.status = resp.Status
 	ls.header = &resp.Header
 
+	// Do we have to do NT lan Manager negotiation...
 	if checkNTLM(resp, reqURL) {
 		resp.Body.Close()
 		return ls, errors.New(errorNTLM)

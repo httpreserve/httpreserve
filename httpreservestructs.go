@@ -46,6 +46,10 @@ type LinkStats struct {
 	statuscode int
 	header     *http.Header
 	link       *url.URL
+
+	// Pretty Debug
+	prettyRequest	string
+	prettyResponse	string
 }
 
 // NTLM (NT Lan Management) Consts
