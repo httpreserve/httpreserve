@@ -2,12 +2,18 @@ package httpreserve
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 )
 
 const requestedURL = "url"
+const requestedFname = "filename"
+
+const errParsingQuery = "error parsing query sent via GET"
+const errNoURL = "no url specified, or too many"
+const errMultiFname = "no filename, or more than one filename specified, setting to \"\""
 
 // A default value
 var defaultServerMethod = http.MethodPost
@@ -25,20 +31,48 @@ func prettyRequest(w http.ResponseWriter, r *http.Request) {
 func handleHttpreserve(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		lookup, _ := url.ParseQuery(r.URL.RawQuery)
-		query := lookup[requestedURL][0]
-		fmt.Fprintln(w, retrieveLinkStats(query))
+		lookup, err := url.ParseQuery(r.URL.RawQuery)
+		if err != nil {
+			fmt.Fprintf(w, "%s\n", errParsingQuery)
+		}
+
+		var link string
+		var fname string
+
+		if val, ok := lookup[requestedURL]; ok {
+			if len(val) > 0 && len(val) < 2 {
+				link = val[0]
+			}
+		}
+
+		if link == "" {
+			fmt.Fprintf(w, "%s %s\n", errParsingQuery, errNoURL)
+			return
+		}
+
+		if val, ok := lookup[requestedFname]; ok {
+			if len(val) > 0 && len(val) < 2 {
+				fname = val[0]
+			}
+		}
+
+		if fname == "" {
+			log.Printf("%s %s", r.RemoteAddr, errMultiFname)
+		}
+
+		fmt.Fprintln(w, retrieveLinkStats(link, fname))
 		return
 	case http.MethodPost:
 		r.ParseForm()
-		query := r.Form.Get(requestedURL)
-		fmt.Fprintln(w, retrieveLinkStats(query))
+		link := r.Form.Get(requestedURL)
+		fname := r.Form.Get(requestedFname)
+		fmt.Fprintln(w, retrieveLinkStats(link, fname))
 		return
 	}
 }
 
-func retrieveLinkStats(query string) string {
-	ls, _ := GenerateLinkStats(query)
+func retrieveLinkStats(link string, fname string) string {
+	ls, _ := GenerateLinkStats(link, fname)
 	js := MakeLinkStatsJSON(ls)
 	return js
 }

@@ -53,7 +53,7 @@ func linkStat(url string) (LinkStats, error) {
 
 // GenerateLinkStats is used to return a JSON object for a URL
 // specified in link variable passed to the function.
-func GenerateLinkStats(link string) (LinkStats, error) {
+func GenerateLinkStats(link string, fname string) (LinkStats, error) {
 	ls, err := linkStat(link)
 	if err != nil {
 		ls, _ = manageLinkStatErrors(ls, err)
@@ -67,6 +67,9 @@ func GenerateLinkStats(link string) (LinkStats, error) {
 		} else {
 			return ls, err
 		}
+	}
+	if fname != "" {
+		ls.FileName = fname
 	}
 	return ls, nil
 }
