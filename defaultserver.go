@@ -106,7 +106,7 @@ func configureDefault() http.Handler {
 // DefaultServer is our call to standup a default server
 // for the httpreserve resolver service to  be queried by our other apps.
 func DefaultServer(port string) {
-	mw := configureDefault()
-	err := http.ListenAndServe(":"+port, mw)
+	middleWare := configureDefault()
+	err := http.ListenAndServe(":"+port, middleWare)
 	log.Fatal(err)
 }
