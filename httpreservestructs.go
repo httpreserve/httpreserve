@@ -28,8 +28,8 @@ type SimpleRequest struct {
 // requests Can be fairly liberal in its expansion
 type LinkStats struct {
 	FileName                    string // If a filename is provided
-	AnalysisVersionNumber		 string
-	AnalysisVersionText			 string
+	AnalysisVersionNumber       string
+	AnalysisVersionText         string
 	Link                        string
 	ResponseCode                int
 	ResponseText                string

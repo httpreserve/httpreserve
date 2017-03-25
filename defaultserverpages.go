@@ -1,8 +1,30 @@
 package httpreserve
 
+import (
+	"net/http"
+	"strings"
+)
+
 const templateFormMethod = "{{template.form.method}}"
 const replacePOST = " method=\"post\" "
 const replaceGET = " method=\"get\" "
+
+// GetDefaultServerPage will print an example server page
+// with the template filled in using the given method. Useful
+// for folk who want to learn about this app. A bit of Ajax
+// and a pretty decent way of encoding Base64 data hyperlinks.
+func GetDefaultServerPage(method string) string {
+	// A good default is to use POST as it's more secure
+	// let users change to GET if they so wish,
+	switch strings.ToUpper(method) {
+	case http.MethodGet:
+		httpreservePages = strings.Replace(httpreservePages, templateFormMethod, replaceGET, 1)
+		return httpreservePages
+	default:
+		httpreservePages = strings.Replace(httpreservePages, templateFormMethod, replacePOST, 1)
+		return httpreservePages
+	}
+}
 
 // Web entry point for our default server for demo purposes.
 var httpreservePages = `

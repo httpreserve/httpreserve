@@ -5,7 +5,6 @@ import (
 	"github.com/justinas/alice"
 	"log"
 	"net/http"
-	"strings"
 )
 
 // Primary handler for httpreserve requests
@@ -107,16 +106,7 @@ func configureDefault() http.Handler {
 // DefaultServer is our call to standup a default server
 // for the httpreserve resolver service to  be queried by our other apps.
 func DefaultServer(port string, method string) {
-
-	// A good default is to use POST as it's more secure
-	// let users change to GET if they so wish,
-	switch strings.ToUpper(method) {
-	case http.MethodGet:
-		httpreservePages = strings.Replace(httpreservePages, templateFormMethod, replaceGET, 1)		
-	default:
-		httpreservePages = strings.Replace(httpreservePages, templateFormMethod, replacePOST, 1)
-	}
-
+	httpreservePages = GetDefaultServerPage(method)
 	middleWare := configureDefault()
 	err := http.ListenAndServe(":"+port, middleWare)
 	log.Fatal(err)
