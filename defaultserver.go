@@ -3,12 +3,9 @@ package httpreserve
 import (
 	"fmt"
 	"github.com/justinas/alice"
-	"html/template"
 	"log"
 	"net/http"
 )
-
-const faviconLocation = "static/ico/favicon.ico"
 
 // Primary handler for httpreserve requests
 func httpreserve(w http.ResponseWriter, r *http.Request) {
@@ -23,15 +20,16 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Sorry, this is not a supported function for this application.")
 }
 
-// Return a 404: TODO: May discard in favour of more friendly
-// response for the user...
+// Handle response when a page is requested by the browser
 func indexhandler(w http.ResponseWriter, r *http.Request) {
-	//w.WriteHeader(404)
+
+	//404...
 	if r.URL.String() != "/" {
 		notFound(w, r)
 		return
 	}
 
+	//Otherwise...
 	switch r.Method {
 	case http.MethodOptions:
 		handleOptions(w, r)
@@ -41,12 +39,9 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		fallthrough
 	case http.MethodGet:
-		t, err := template.ParseFiles("static/form/index.htm")
-		if err != nil {
-			fmt.Fprintf(w, "%+v\n", err)
-			return
-		}
-		t.Execute(w, nil)
+		//deliver a default HTML to the web-browser
+		w.Header().Set("Content-Type", "text/html")
+		fmt.Fprintln(w, httpreservePages)
 		return
 	default:
 		fmt.Fprintln(w, r.Method+" is unsupported from root.")
@@ -83,18 +78,13 @@ func newHeaderSetter(key, val string) func(http.Handler) http.Handler {
 	}
 }
 
-// Handle the return of favicon when requested by client
-func faviconHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, faviconLocation)
-}
-
 // Configure our default server mechanism for httpreserve
 func configureDefault() http.Handler {
 
 	fs := http.FileServer(http.Dir("static"))
 	h := http.NewServeMux()
 
-	h.HandleFunc("/favicon.ico", faviconHandler)
+	//Routes and handlers...
 	h.HandleFunc("/httpreserve", httpreserve)
 	h.HandleFunc("/", indexhandler)
 	h.Handle("/static/", http.StripPrefix("/static/", fs))
