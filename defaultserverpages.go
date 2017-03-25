@@ -1,6 +1,7 @@
 package httpreserve
 
 import (
+	"log"
 	"net/http"
 	"strings"
 )
@@ -20,7 +21,11 @@ func GetDefaultServerPage(method string) string {
 	case http.MethodGet:
 		httpreservePages = strings.Replace(httpreservePages, templateFormMethod, replaceGET, 1)
 		return httpreservePages
+	case http.MethodPost:
+		httpreservePages = strings.Replace(httpreservePages, templateFormMethod, replacePOST, 1)
+		return httpreservePages
 	default:
+		log.Printf("%s is not a valid HTTP method, setting to default: POST\n", method)
 		httpreservePages = strings.Replace(httpreservePages, templateFormMethod, replacePOST, 1)
 		return httpreservePages
 	}
