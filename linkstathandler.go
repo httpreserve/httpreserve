@@ -59,8 +59,8 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 		}
 
 		if !isIA(ls.Link) {
-			isEarliest := createSimpleRequest(httpHEAD, iaURLearliest, false, "")
-			earliestIA, err := httpFromSimpleRequest(isEarliest)
+			isEarliest := CreateSimpleRequest(httpHEAD, iaURLearliest, false, "")
+			earliestIA, err := HTTPFromSimpleRequest(isEarliest)
 			if err != nil {
 				return ls, errors.Wrap(err, "IA http request failed")
 			}

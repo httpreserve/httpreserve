@@ -24,7 +24,7 @@ func testConnection(requrl string) (LinkStats, error) {
 	case "http":
 		fallthrough
 	case "https":
-		ls, err = httpFromSimpleRequest(defaultSimpleRequest(req))
+		ls, err = HTTPFromSimpleRequest(defaultSimpleRequest(req))
 		if err != nil {
 			return ls, errors.Wrap(err, "handlehttp() failed")
 		}

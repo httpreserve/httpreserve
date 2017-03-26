@@ -12,14 +12,18 @@ import (
 // of things with our requests. Create a default object to make that
 // easier for us.
 func defaultSimpleRequest(reqURL *url.URL) SimpleRequest {
-	return createSimpleRequest(httpHEAD, reqURL, useProxy, httpBYTERANGE)
+	return CreateSimpleRequest(httpHEAD, reqURL, useProxy, httpBYTERANGE)
 }
 
+// CreateSimpleRequest is a mechanism to make a suitable
+// http request header to find some information out about
+// a web resouse.
 // We want to make handlehttp more useable so let's wrap
 // as much as we can up front and see if that's possible
 // recommended setting for byterange is to maintain the default
 // but the potential to set it manually here is possible
-func createSimpleRequest(method string, reqURL *url.URL, proxy bool, byterange string) SimpleRequest {
+// If byterange is left "" then default range will be used.
+func CreateSimpleRequest(method string, reqURL *url.URL, proxy bool, byterange string) SimpleRequest {
 	var sr SimpleRequest
 	sr.Method = method
 	sr.ReqURL = reqURL
@@ -32,9 +36,11 @@ func createSimpleRequest(method string, reqURL *url.URL, proxy bool, byterange s
 	return sr
 }
 
+// HTTPFromSimpleRequest is another mechanism we can use to
+// retrieve some basic information out from a web resource.
 // Call handlehttp from a SimpleRequest object instead
 // of calling function directly...
-func httpFromSimpleRequest(sr SimpleRequest) (LinkStats, error) {
+func HTTPFromSimpleRequest(sr SimpleRequest) (LinkStats, error) {
 	ls, err := handlehttp(sr.Method, sr.ReqURL, sr.Proxy, sr.ByteRange)
 	return ls, err
 }
