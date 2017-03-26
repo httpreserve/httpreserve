@@ -12,7 +12,11 @@ import (
 // of things with our requests. Create a default object to make that
 // easier for us.
 func defaultSimpleRequest(reqURL *url.URL) SimpleRequest {
-	return CreateSimpleRequest(httpHEAD, reqURL, useProxy, httpBYTERANGE)
+	// we're not concerned about error here, as internally, we've
+	// already parsed the URL which is the only source of potential
+	// error in CreateSimpleRequest
+	sr, _ := CreateSimpleRequest(httpHEAD, reqURL.String(), useProxy, httpBYTERANGE)
+	return sr
 }
 
 // CreateSimpleRequest is a mechanism to make a suitable
@@ -23,17 +27,21 @@ func defaultSimpleRequest(reqURL *url.URL) SimpleRequest {
 // recommended setting for byterange is to maintain the default
 // but the potential to set it manually here is possible
 // If byterange is left "" then default range will be used.
-func CreateSimpleRequest(method string, reqURL *url.URL, proxy bool, byterange string) SimpleRequest {
+func CreateSimpleRequest(method string, reqURL string, proxy bool, byterange string) (SimpleRequest, error) {
 	var sr SimpleRequest
 	sr.Method = method
-	sr.ReqURL = reqURL
+	req, err := url.Parse(reqURL)
+	if err != nil {
+		return sr, errors.Wrap(err, "url parse failed in CreateSimpleRequest")
+	}
+	sr.ReqURL = req
 	sr.Proxy = proxy
 	if byterange == "" {
 		sr.ByteRange = httpBYTERANGE
 	} else {
 		sr.ByteRange = byterange
 	}
-	return sr
+	return sr, nil
 }
 
 // HTTPFromSimpleRequest is another mechanism we can use to
