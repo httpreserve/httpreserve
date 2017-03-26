@@ -110,7 +110,7 @@ func makeLinkStatJSON(ls LinkStats) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return string(js), nil
+	return string(js) + "\n", nil
 }
 
 // Add important errors to LinkStats structure for us to
