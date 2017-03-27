@@ -9,9 +9,10 @@
 [![GoDoc](https://godoc.org/github.com/exponential-decay/httpreserve?status.svg)](https://godoc.org/github.com/exponential-decay/httpreserve)
 [![Go Report Card](https://goreportcard.com/badge/github.com/exponential-decay/httpreserve)](https://goreportcard.com/report/github.com/exponential-decay/httpreserve)
 
-Placeholder text to describe tool further. 
+A tool to check the status of a weblink and also see whether it is archived
+in the [Internet Archive](https://archive.org/). 
 
-# Default Server
+## Default Server
 
 The library comes with a default servere mode that can be configured for
 POST and GET requests. POST by default. Default port is :2040 but this can
@@ -27,6 +28,9 @@ documented below.
 The httpreserve client is a separate application offering a broader range of
 access methods. See: https://github.com/exponential-decay/httpreserve-app
 
+The client application is a work in progress. Stay tuned for more
+information about its capabilities. 
+
 ## API
 
 Primary entry point when the server is running:
@@ -41,7 +45,27 @@ http://<i>{httpreserve-ip-address}:{port}</i>/httpreserve?url=http://www.google.
 
 Same access point, but encode url and filename in a <i>application/x-www-form-urlencoded</i> form.
 
-**RETURN** valie:
+**RETURN** value:
+
+'application/json' struct to work with, e.g. 
+
+      {
+         "FileName": "",
+         "AnalysisVersionNumber": "0.0.0",
+         "AnalysisVersionText": "exponentialDK-httpreserve/0.0.0",
+         "Link": "http://www.bbc.co.uk/",
+         "ResponseCode": 200,
+         "ResponseText": "OK",
+         "ScreenShot": "",
+         "InternetArchiveLinkLatest": "http://web.archive.org/web/20170326191259/http://www0.bbc.co.uk/",
+         "InternetArchiveLinkEarliest": "http://web.archive.org/web/19961221203254/http://www0.bbc.co.uk/",
+         "InternetArchiveSaveLink": "http://web.archive.org/save/http://www.bbc.co.uk/",
+         "InternetArchiveResponseCode": 200,
+         "InternetArchiveResponseText": "OK",
+         "Archived": true,
+         "ProtocolError": false,
+         "ProtocolErrorMessage": ""
+      }
 
 ## Archiving Weblinks
 
