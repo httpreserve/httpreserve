@@ -60,12 +60,14 @@ func handleHttpreserve(w http.ResponseWriter, r *http.Request) {
 			log.Printf("%s %s", r.RemoteAddr, errMultiFname)
 		}
 
+		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintln(w, retrieveLinkStats(link, fname))
 		return
 	case http.MethodPost:
 		r.ParseForm()
 		link := r.Form.Get(requestedURL)
 		fname := r.Form.Get(requestedFname)
+		w.Header().Set("Content-Type", "application/json")		
 		fmt.Fprintln(w, retrieveLinkStats(link, fname))
 		return
 	}
