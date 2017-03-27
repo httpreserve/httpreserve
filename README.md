@@ -22,28 +22,28 @@ also be selected at runtime.
 The default server can also be stood up as a web service. The API is
 documented below. 
 
-# Client
+## Client
 
 The httpreserve client is a separate application offering a broader range of
 access methods. See: https://github.com/exponential-decay/httpreserve-app
 
-# API
+## API
 
 Primary entry point when the server is running:
 
 http://{httpreserve-ip-address}:{port}/httpreserve
 
-GET example:
+**GET** example:
 
-http://{httpreserve-ip-address}:{port}/httpreserve?url=http://www.google.com&filename=filename.txt
+http://<i>{httpreserve-ip-address}:{port}</i>/httpreserve?url=http://www.google.com&filename=filename.txt
 
-POST example:
+**POST** example:
 
 Same access point, but encode url and filename in a <i>application/x-www-form-urlencoded</i> form.
 
-RETURN valie:
+**RETURN** valie:
 
-### See Also
+## Archiving Weblinks
 
 * [Find and Connect Project:](http://www.findandconnectwrblog.info/2016/11/broken-links-broken-trust/) Nicola Laurent on the impact of broken links.
 * [Binary Trees? Automatically Identifying the links between born digital records.](https://www.youtube.com/watch?v=Ked9GRmKlRw) I write about hyperlinks as a public record in own right when submitted as part of a documentary heritage.
