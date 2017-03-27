@@ -19,9 +19,11 @@ func GetDefaultServerPage(method string) string {
 	// let users change to GET if they so wish,
 	switch strings.ToUpper(method) {
 	case http.MethodGet:
+		log.Println("Default server HTTP method set to:", replaceGET)
 		httpreservePages = strings.Replace(httpreservePages, templateFormMethod, replaceGET, 1)
 		return httpreservePages
 	case http.MethodPost:
+		log.Println("Default server HTTP method set to:", replacePOST)
 		httpreservePages = strings.Replace(httpreservePages, templateFormMethod, replacePOST, 1)
 		return httpreservePages
 	default:
