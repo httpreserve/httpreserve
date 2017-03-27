@@ -70,7 +70,7 @@ Same access point, but encode url and filename in a <i>application/x-www-form-ur
 ## Archiving Weblinks
 
 * [Find and Connect Project:](http://www.findandconnectwrblog.info/2016/11/broken-links-broken-trust/) Nicola Laurent on the impact of broken links.
-* [Binary Trees? Automatically Identifying the links between born digital records.](https://www.youtube.com/watch?v=Ked9GRmKlRw) I write about hyperlinks as a public record in own right when submitted as part of a documentary heritage.
+* [Binary Trees? Automatically Identifying the links between born digital records:](https://www.youtube.com/watch?v=Ked9GRmKlRw) I write about hyperlinks as a public record in own right when submitted as part of a documentary heritage.
 
 ### License
 
