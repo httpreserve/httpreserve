@@ -1,13 +1,13 @@
 <div>
 <p align="center">
-<img id="logo" src="https://github.com/exponential-decay/httpreserve/raw/master/src/images/httpreserve-logo.png" alt="httpreserve"/>
+<img id="logo" src="https://github.com/httpreserve/httpreserve/raw/master/src/images/httpreserve-logo.png" alt="httpreserve"/>
 </p>
 </div>
 
 # httpreserve
-[![Build Status](https://travis-ci.org/exponential-decay/httpreserve.svg?branch=master)](https://travis-ci.org/exponential-decay/httpreserve)
-[![GoDoc](https://godoc.org/github.com/exponential-decay/httpreserve?status.svg)](https://godoc.org/github.com/exponential-decay/httpreserve)
-[![Go Report Card](https://goreportcard.com/badge/github.com/exponential-decay/httpreserve)](https://goreportcard.com/report/github.com/exponential-decay/httpreserve)
+[![Build Status](https://travis-ci.org/httpreserve/httpreserve.svg?branch=master)](https://travis-ci.org/httpreserve/httpreserve)
+[![GoDoc](https://godoc.org/github.com/httpreserve/httpreserve?status.svg)](https://godoc.org/github.com/httpreserve/httpreserve)
+[![Go Report Card](https://goreportcard.com/badge/github.com/exponential-decay/httpreserve)](https://goreportcard.com/report/github.com/httpreserve/httpreserve)
 
 A tool to check the status of a weblink and also see whether it is archived
 in the [Internet Archive](https://archive.org/). 
@@ -18,7 +18,7 @@ The library comes with a default servere mode that can be configured for
 POST and GET requests. POST by default. Default port is :2040 but this can
 also be selected at runtime.
 
-<img id="logo" src="https://github.com/exponential-decay/httpreserve/raw/master/src/images/defaultserver.png" alt="httpreserve"/>
+<img id="logo" src="https://github.com/httpreserve/httpreserve/raw/master/src/images/defaultserver.png" alt="httpreserve"/>
 
 The default server can also be stood up as a web service. The API is
 documented below. 
@@ -26,7 +26,7 @@ documented below.
 ## Client
 
 The httpreserve client is a separate application offering a broader range of
-access methods. See: https://github.com/exponential-decay/httpreserve-app
+access methods. See: https://github.com/httpreserve/httpreserve-app
 
 The client application is a work in progress. Stay tuned for more
 information about its capabilities. 
