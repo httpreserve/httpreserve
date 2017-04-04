@@ -67,7 +67,7 @@ func handleHttpreserve(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 		link := r.Form.Get(requestedURL)
 		fname := r.Form.Get(requestedFname)
-		w.Header().Set("Content-Type", "application/json")		
+		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintln(w, retrieveLinkStats(link, fname))
 		return
 	}

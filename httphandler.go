@@ -88,6 +88,7 @@ func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (L
 	re, _ := httputil.DumpResponse(resp, false)
 	ls.prettyResponse = string(re)
 
+	ls.ContentType = resp.Header.Get("Content-Type")
 	ls.ResponseCode = resp.StatusCode
 	ls.ResponseText = http.StatusText(resp.StatusCode)
 	ls.link = reqURL

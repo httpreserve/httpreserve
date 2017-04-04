@@ -31,6 +31,8 @@ type LinkStats struct {
 	AnalysisVersionNumber       string
 	AnalysisVersionText         string
 	Link                        string
+	Title                       string
+	ContentType                 string
 	ResponseCode                int
 	ResponseText                string
 	ScreenShot                  string // HREF to screenshot
