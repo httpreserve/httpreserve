@@ -89,12 +89,19 @@ func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (L
 
 	resp, err := client.Do(req)
 	if err != nil {
-		if !(strings.Contains(err.Error(), "lookup") &&
-			strings.Contains(err.Error(), "no such host")) {
-			return ls, errors.Wrap(err, "client request failed")
+		if strings.Contains(err.Error(), "lookup") &&
+			strings.Contains(err.Error(), "no such host") {
+			nohost = true
+			ls.ResponseText = "error: client request failed: no such host"
+		} else if strings.Contains(err.Error(), "i/o timeout") {
+			nohost = true
+			ls.ResponseText = "error: client request failed: i/o timeout"
+		} else if strings.Contains(err.Error(), "no route to host") {
+			nohost = true
+			ls.ResponseText = "error: client request failed: no route to host"
 		} else {
 			nohost = true
-			ls.ResponseText = "lookup failed: no such host"
+			ls.ResponseText = "client request failed: " + err.Error()
 		}
 	}
 
