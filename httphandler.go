@@ -2,6 +2,7 @@ package httpreserve
 
 import (
 	"github.com/pkg/errors"
+	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -15,7 +16,7 @@ func defaultSimpleRequest(reqURL *url.URL) SimpleRequest {
 	// we're not concerned about error here, as internally, we've
 	// already parsed the URL which is the only source of potential
 	// error in CreateSimpleRequest
-	sr, _ := CreateSimpleRequest(httpHEAD, reqURL.String(), useProxy, httpBYTERANGE)
+	sr, _ := CreateSimpleRequest(httpGET, reqURL.String(), useProxy, httpBYTERANGE)
 	return sr
 }
 
@@ -84,15 +85,27 @@ func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (L
 		return ls, errors.Wrap(err, "client request failed")
 	}
 
+	// once we've closed the body we can't do anything else
+	// with the packet content...
+	data, err := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+	if err != nil {
+		return ls, errors.Wrap(err, "reading http response body")
+	}
+
 	// A mechanism for users to debug their code using Response headers
 	re, _ := httputil.DumpResponse(resp, false)
 	ls.prettyResponse = string(re)
 
-	ls.ContentType = resp.Header.Get("Content-Type")
 	ls.ResponseCode = resp.StatusCode
 	ls.ResponseText = http.StatusText(resp.StatusCode)
 	ls.link = reqURL
 	ls.Link = reqURL.String()
+
+	// Populate LS Title and Content-Type
+	ls.ContentType = resp.Header.Get("Content-Type")
+	ls.Title = getTitle(string(data), ls.ContentType)
+
 
 	// For debug record pertinent packet details...
 	ls.statuscode = resp.StatusCode
@@ -101,15 +114,27 @@ func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (L
 
 	// Do we have to do NT lan Manager negotiation...
 	if checkNTLM(resp, reqURL) {
-		resp.Body.Close()
 		return ls, errors.New(errorNTLM)
 	}
 
-	// once we've closed the body we can't do anything else
-	// with the packet content...
-	resp.Body.Close()
-
 	return ls, nil
+}
+
+// GetTitle is a way to add more useful metadata to our LinkStats
+// structure by way of checking for link drift. Where the page we're
+// expecting is one thing but it has become another.
+func getTitle(body string, contentType string) string {
+	if !strings.Contains(contentType, "text/html") {
+		return ""
+	}
+	body = strings.ToLower(body)
+	t1string := "<title>"
+	t1 := strings.Index(body, t1string)
+	t2 := strings.Index(body, "</title>")
+	if (t1 != -1 && t2 != -1) && t2 > t1+len(t1string) {
+		return body[t1+len(t1string):t2]		//index plus length of search string
+	}
+	return ""
 }
 
 // Network back-ends like here at Archives New Zealand use NTLM

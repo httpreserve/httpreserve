@@ -40,7 +40,7 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 		fallthrough
 	case http.MethodGet:
 		//deliver a default HTML to the web-browser
-		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		fmt.Fprintln(w, httpreservePages)
 		return
 	default:

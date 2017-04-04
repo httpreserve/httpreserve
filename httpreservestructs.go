@@ -10,7 +10,8 @@ const httpGET = http.MethodGet
 const httpHEAD = http.MethodHead
 
 // Default byte-range for initial requests
-const httpBYTERANGE = "bytes=0-0"
+// use first 0.5mb to find <title> tag...
+const httpBYTERANGE = "bytes=0-500"
 
 // Default proxy value we might set on compilation
 const useProxy = false
