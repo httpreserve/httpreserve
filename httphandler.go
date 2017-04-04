@@ -1,6 +1,7 @@
 package httpreserve
 
 import (
+	//"fmt"
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
@@ -69,6 +70,10 @@ func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (L
 	req.Header.Add("Range", byterange)
 	req.Header.Add("proxy-Connection", "Keep-Alive")
 
+	// start adding to our LinkStat struct as soon as possible
+	ls.link = reqURL
+	ls.Link = reqURL.String()
+
 	if proxy {
 		client, err = returnProxyClient(req)
 		if err != nil {
@@ -80,43 +85,53 @@ func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (L
 	rq, _ := httputil.DumpRequest(req, false)
 	ls.prettyRequest = string(rq)
 
+	var nohost = false
+
 	resp, err := client.Do(req)
 	if err != nil {
-		return ls, errors.Wrap(err, "client request failed")
+		if !(strings.Contains(err.Error(), "lookup") &&
+			strings.Contains(err.Error(), "no such host")) {
+			return ls, errors.Wrap(err, "client request failed")
+		} else {
+			nohost = true
+			ls.ResponseText = "lookup failed: no such host"
+		}
 	}
 
-	// once we've closed the body we can't do anything else
-	// with the packet content...
-	data, err := ioutil.ReadAll(resp.Body)
-	resp.Body.Close()
-	if err != nil {
-		return ls, errors.Wrap(err, "reading http response body")
+	// No host means we haven't a server we can even look at
+	// only continue to process live stats for servers that exist
+	// when we return from this function... process via Internet Archive
+	if !nohost {
+		// once we've closed the body we can't do anything else
+		// with the packet content...
+		data, err := ioutil.ReadAll(resp.Body)
+		resp.Body.Close()
+		if err != nil {
+			return ls, errors.Wrap(err, "reading http response body")
+		}
+
+		// A mechanism for users to debug their code using Response headers
+		re, _ := httputil.DumpResponse(resp, false)
+		ls.prettyResponse = string(re)
+
+		// Response Codes...
+		ls.ResponseCode = resp.StatusCode
+		ls.ResponseText = http.StatusText(resp.StatusCode)
+
+		// Populate LS Title and Content-Type
+		ls.ContentType = resp.Header.Get("Content-Type")
+		ls.Title = getTitle(string(data), ls.ContentType)
+
+		// For debug record pertinent packet details...
+		ls.statuscode = resp.StatusCode
+		ls.status = resp.Status
+		ls.header = &resp.Header
+
+		// Do we have to do NT lan Manager negotiation...
+		if checkNTLM(resp, reqURL) {
+			return ls, errors.New(errorNTLM)
+		}
 	}
-
-	// A mechanism for users to debug their code using Response headers
-	re, _ := httputil.DumpResponse(resp, false)
-	ls.prettyResponse = string(re)
-
-	ls.ResponseCode = resp.StatusCode
-	ls.ResponseText = http.StatusText(resp.StatusCode)
-	ls.link = reqURL
-	ls.Link = reqURL.String()
-
-	// Populate LS Title and Content-Type
-	ls.ContentType = resp.Header.Get("Content-Type")
-	ls.Title = getTitle(string(data), ls.ContentType)
-
-
-	// For debug record pertinent packet details...
-	ls.statuscode = resp.StatusCode
-	ls.status = resp.Status
-	ls.header = &resp.Header
-
-	// Do we have to do NT lan Manager negotiation...
-	if checkNTLM(resp, reqURL) {
-		return ls, errors.New(errorNTLM)
-	}
-
 	return ls, nil
 }
 
@@ -132,7 +147,7 @@ func getTitle(body string, contentType string) string {
 	t1 := strings.Index(body, t1string)
 	t2 := strings.Index(body, "</title>")
 	if (t1 != -1 && t2 != -1) && t2 > t1+len(t1string) {
-		return body[t1+len(t1string):t2]		//index plus length of search string
+		return body[t1+len(t1string) : t2] //index plus length of search string
 	}
 	return ""
 }
