@@ -61,7 +61,7 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 		if !isIA(ls.Link) {
 			// We don't have to be concerned with error here is URL is already
 			// previously Parsed correctly, which we do so dilligently under iafunctions.go
-			isEarliest, _ := CreateSimpleRequest(httpHEAD, iaURLearliest.String(), false, "")
+			isEarliest, err := CreateSimpleRequest(httpHEAD, iaURLearliest.String(), false, "")
 			earliestIA, err := HTTPFromSimpleRequest(isEarliest)
 			if err != nil {
 				return ls, errors.Wrap(err, "IA http request failed")
