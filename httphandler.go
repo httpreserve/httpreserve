@@ -85,60 +85,53 @@ func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (L
 	rq, _ := httputil.DumpRequest(req, false)
 	ls.prettyRequest = string(rq)
 
-	var nohost = false
-
 	resp, err := client.Do(req)
 	if err != nil {
 		if strings.Contains(err.Error(), "lookup") &&
 			strings.Contains(err.Error(), "no such host") {
-			nohost = true
 			ls.ResponseText = "error: client request failed: no such host"
 		} else if strings.Contains(err.Error(), "i/o timeout") {
-			nohost = true
 			ls.ResponseText = "error: client request failed: i/o timeout"
 		} else if strings.Contains(err.Error(), "no route to host") {
-			nohost = true
 			ls.ResponseText = "error: client request failed: no route to host"
 		} else {
-			nohost = true
 			ls.ResponseText = "client request failed: " + err.Error()
 		}
+		// return and only continue to proces responses that there
+		// was no error for...
+		return ls, err
 	}
 
-	// No host means we haven't a server we can even look at
-	// only continue to process live stats for servers that exist
-	// when we return from this function... process via Internet Archive
-	if !nohost {
-		// once we've closed the body we can't do anything else
-		// with the packet content...
-		data, err := ioutil.ReadAll(resp.Body)
-		resp.Body.Close()
-		if err != nil {
-			return ls, errors.Wrap(err, "reading http response body")
-		}
-
-		// A mechanism for users to debug their code using Response headers
-		re, _ := httputil.DumpResponse(resp, false)
-		ls.prettyResponse = string(re)
-
-		// Response Codes...
-		ls.ResponseCode = resp.StatusCode
-		ls.ResponseText = http.StatusText(resp.StatusCode)
-
-		// Populate LS Title and Content-Type
-		ls.ContentType = resp.Header.Get("Content-Type")
-		ls.Title = getTitle(string(data), ls.ContentType)
-
-		// For debug record pertinent packet details...
-		ls.statuscode = resp.StatusCode
-		ls.status = resp.Status
-		ls.header = &resp.Header
-
-		// Do we have to do NT lan Manager negotiation...
-		if checkNTLM(resp, reqURL) {
-			return ls, errors.New(errorNTLM)
-		}
+	// once we've closed the body we can't do anything else
+	// with the packet content...
+	data, err := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+	if err != nil {
+		return ls, errors.Wrap(err, "reading http response body")
 	}
+
+	// A mechanism for users to debug their code using Response headers
+	re, _ := httputil.DumpResponse(resp, false)
+	ls.prettyResponse = string(re)
+
+	// Response Codes...
+	ls.ResponseCode = resp.StatusCode
+	ls.ResponseText = http.StatusText(resp.StatusCode)
+
+	// Populate LS Title and Content-Type
+	ls.ContentType = resp.Header.Get("Content-Type")
+	ls.Title = getTitle(string(data), ls.ContentType)
+
+	// For debug record pertinent packet details...
+	ls.statuscode = resp.StatusCode
+	ls.status = resp.Status
+	ls.header = &resp.Header
+
+	// Do we have to do NT lan Manager negotiation...
+	if checkNTLM(resp, reqURL) {
+		return ls, errors.New(errorNTLM)
+	}
+
 	return ls, nil
 }
 

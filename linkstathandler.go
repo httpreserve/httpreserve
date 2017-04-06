@@ -51,58 +51,58 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 	ls.AnalysisVersionText = VersionText()
 	ls.AnalysisVersionNumber = VersionNumber()
 
-	if !ls.ProtocolError {
-
-		iaURLearliest, err := GetPotentialURLEarliest(ls.Link)
-		if err != nil {
-			return ls, errors.Wrap(err, "IA url creation failed")
-		}
-
-		if !isIA(ls.Link) {
-			// We don't have to be concerned with error here is URL is already
-			// previously Parsed correctly, which we do so dilligently under iafunctions.go
-			isEarliest, err := CreateSimpleRequest(httpHEAD, iaURLearliest.String(), false, "")
-			earliestIA, err := HTTPFromSimpleRequest(isEarliest)
-			if err != nil {
-				return ls, errors.Wrap(err, "IA http request failed")
-			}
-			// Add out Internet Archive Response Code to ours...
-			ls = addResponses(ls, earliestIA)
-
-			// First test for existence of an internet archive copy
-			if earliestIA.ResponseCode == http.StatusNotFound {
-				if earliestIA.header.Get("Link") == "" {
-					return ls, errors.New(errorNoIALink)
-				}
-			}
-
-			// Else, continue to retrieve IA links
-			iaLinkData := earliestIA.header.Get("Link")
-			iaLinkInfo := strings.Split(iaLinkData, ", <")
-
-			var legacyCollection = make(map[string]string)
-
-			for _, lnk := range iaLinkInfo {
-				trimmedlink := strings.Trim(lnk, " ")
-				trimmedlink = strings.Replace(trimmedlink, ">;", ";", 1) // fix chevrons
-				for _, rel := range iaRelList {
-					if strings.Contains(trimmedlink, rel) {
-						legacyCollection[rel] = trimmedlink
-						break
-					}
-				}
-			}
-
-			// We've some internet archive links that we can use
-			if len(legacyCollection) > 0 {
-				ls = populateIALinks(ls, legacyCollection)
-			}
-
-			ls = addSaveURL(ls)
-		} else {
-			ls.InternetArchiveSaveLink = ErrorIAExists
-		}
+	iaURLearliest, err := GetPotentialURLEarliest(ls.Link)
+	if err != nil {
+		return ls, errors.Wrap(err, "IA url creation failed")
 	}
+
+	if !isIA(ls.Link) {
+		// We don't have to be concerned with error here is URL is already
+		// previously Parsed correctly, which we do so dilligently under iafunctions.go
+		isEarliest, err := CreateSimpleRequest(httpHEAD, iaURLearliest.String(), false, "")
+		earliestIA, err := HTTPFromSimpleRequest(isEarliest)
+		if err != nil {
+			ls.InternetArchiveResponseText = err.Error()
+			return ls, errors.Wrap(err, "IA http request failed")
+		}
+		// Add out Internet Archive Response Code to ours...
+		ls = addResponses(ls, earliestIA)
+
+		// First test for existence of an internet archive copy
+		if earliestIA.ResponseCode == http.StatusNotFound {
+			if earliestIA.header.Get("Link") == "" {
+				return ls, errors.New(errorNoIALink)
+			}
+		}
+
+		// Else, continue to retrieve IA links
+		iaLinkData := earliestIA.header.Get("Link")
+		iaLinkInfo := strings.Split(iaLinkData, ", <")
+
+		var legacyCollection = make(map[string]string)
+
+		for _, lnk := range iaLinkInfo {
+			trimmedlink := strings.Trim(lnk, " ")
+			trimmedlink = strings.Replace(trimmedlink, ">;", ";", 1) // fix chevrons
+			for _, rel := range iaRelList {
+				if strings.Contains(trimmedlink, rel) {
+					legacyCollection[rel] = trimmedlink
+					break
+				}
+			}
+		}
+
+		// We've some internet archive links that we can use
+		if len(legacyCollection) > 0 {
+			ls = populateIALinks(ls, legacyCollection)
+		}
+
+		ls = addSaveURL(ls)
+
+	} else {
+		ls.InternetArchiveSaveLink = ErrorIAExists
+	}
+
 	return ls, nil
 }
 
