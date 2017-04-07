@@ -8,6 +8,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"strings"
+	"time"
 )
 
 // At least for testing we're going to be doing a limited range
@@ -60,7 +61,10 @@ func HTTPFromSimpleRequest(sr SimpleRequest) (LinkStats, error) {
 func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (LinkStats, error) {
 
 	var ls LinkStats
-	var client = &http.Client{}
+	timeout := time.Duration(3 * time.Second)
+	var client = &http.Client{
+		Timeout: timeout,
+	}
 
 	req, err := http.NewRequest(method, reqURL.String(), nil)
 	if err != nil {
