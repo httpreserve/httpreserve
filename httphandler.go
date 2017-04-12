@@ -61,7 +61,7 @@ func HTTPFromSimpleRequest(sr SimpleRequest) (LinkStats, error) {
 func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (LinkStats, error) {
 
 	var ls LinkStats
-	timeout := time.Duration(3 * time.Second)
+	timeout := time.Duration(10 * time.Second)
 	var client = &http.Client{
 		Timeout: timeout,
 	}
