@@ -126,14 +126,17 @@ var httpreservePages = `
 			figcaption { font-family: times new roman, arial, verdana; font-size: 22px; font-weight: bold; margin-bottom: 8px; }
 
 			div.wrap { margin: 0 auto ; width:715px; }
-			div.layout { margin-top: 50px }
+			div.layout { margin-top: 50px; min-height: 100%; height: 250px; }
 
 			h4 { font-size: 16px;}
 
 			input.link { display: block; margin: auto; width: 500px; }
 			input.button  { display: block; margin: auto; }
 
-			footer { display: block; bottom: 0; margin-bottom: 20px; position: fixed; }
+         /*use push to position footer more usefully on screen if necessary*/
+         div.push { height: 340px; min-height: 340px; }
+         
+         div.footer { height: 50px; margin: 0 auto ; width:200px; text-align: center; }
 		</style>
 	</head>
 	<body>
@@ -163,12 +166,13 @@ var httpreservePages = `
 		<br/><br/>
 		<pre id="httpreserve-analysis"></div>
 		</p>
-		<footer>
-		   A project by <a href="https://twitter.com/beet_keeper" alt="@beet_keeper on Twitter">@beet_keeper</a>
-		   <br/>
-		   On GitHub: <a href="https://github.com/exponential-decay/httpreserve" alt="httpreserve on GitHub">httpreserve</a>
-		</footer>
+		<div class="push">&nbsp;</div>
 		</div>
+      <div class="footer" id="footer">
+		A project by <a href="https://twitter.com/beet_keeper" alt="@beet_keeper on Twitter">@beet_keeper</a>
+		<br/>
+		On GitHub: <a href="https://github.com/exponential-decay/httpreserve-workbench" alt="httpreserve on GitHub">httpreserve</a>
+	</div>      
 	</div>
 	</body>
 	</html> 
