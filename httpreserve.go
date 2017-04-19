@@ -15,12 +15,9 @@ func testConnection(requrl string) (LinkStats, error) {
 		return ls, errors.Wrap(err, "url parse failed")
 	}
 
+	// Option to handle FTP if we choose, but deleted from code
+	// at present, before git: 26a91577bc7bb8d29187169755e01caf730b2f14
 	switch req.Scheme {
-	case "ftp":
-		/*_, err := handleftp(request)
-		if err != nil {
-			panic(err)
-		}*/
 	case "http":
 		fallthrough
 	case "https":
