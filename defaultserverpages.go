@@ -123,7 +123,7 @@ var httpreservePages = `
 		</script>
 		<style>
 			body { min-width:750px; font-family: arial, verdana; font-size: 10px; margin-bottom: 20px}
-			figcaption { font-family: times new roman, arial, verdana; font-size: 22px; font-weight: bold; margin-bottom: 8px; }
+			figcaption { font-family: times new roman, arial, verdana; font-size: 20px; font-weight: bold; margin-bottom: 8px; }
 
 			div.wrap { margin: 0 auto ; width:715px; }
 			div.layout { margin-top: 50px; min-height: 100%; height: 250px; }
@@ -149,7 +149,7 @@ var httpreservePages = `
 				<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmc
 				vMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiIHZpZXdCb3g9IjAgMCA4IDgiPg0KIC
 				A8cGF0aCBkPSJNMCAwdjFoOHYtMWgtOHptNCAybC0zIDNoMnYzaDJ2LTNoMmwtMy0zeiIgLz4NCjwvc3ZnPg==" 
-				width="60px" height="60px" alt="httpreserve"/>
+				width="50px" height="50px" alt="httpreserve"/>
 			</figure>
 		</center>
 		</p>   
@@ -171,7 +171,7 @@ var httpreservePages = `
       <div class="footer" id="footer">
 		A project by <a href="https://twitter.com/beet_keeper" alt="@beet_keeper on Twitter">@beet_keeper</a>
 		<br/>
-		On GitHub: <a href="https://github.com/exponential-decay/httpreserve-workbench" alt="httpreserve on GitHub">httpreserve</a>
+		On GitHub: <a href="https://github.com/exponential-decay/httpreserve" alt="httpreserve on GitHub">httpreserve</a>
 	</div>      
 	</div>
 	</body>
