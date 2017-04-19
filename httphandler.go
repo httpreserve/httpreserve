@@ -1,7 +1,6 @@
 package httpreserve
 
 import (
-	//"fmt"
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"

@@ -2,12 +2,10 @@ package httpreserve
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/pkg/errors"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"os"
 	"strings"
 )
 
@@ -126,7 +124,7 @@ func manageLinkStatErrors(ls LinkStats, err error) (LinkStats, error) {
 	case errorUnknownProtocol:
 		ls.ProtocolErrorMessage = errorUnknownProtocol
 	default:
-		fmt.Fprintln(os.Stderr, "[LinkStat Fail]", errors.Wrap(err, "LinkStat failed"))
+		return ls, errors.Wrap(err, "LinkStat failed")
 	}
 	return ls, nil
 }
