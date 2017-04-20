@@ -7,7 +7,7 @@
 # httpreserve
 [![Build Status](https://travis-ci.org/httpreserve/httpreserve.svg?branch=master)](https://travis-ci.org/httpreserve/httpreserve)
 [![GoDoc](https://godoc.org/github.com/httpreserve/httpreserve?status.svg)](https://godoc.org/github.com/httpreserve/httpreserve)
-[![Go Report Card](https://goreportcard.com/badge/github.com/exponential-decay/httpreserve)](https://goreportcard.com/report/github.com/httpreserve/httpreserve)
+[![Go Report Card](https://goreportcard.com/badge/github.com/httpreserve/httpreserve)](https://goreportcard.com/report/github.com/httpreserve/httpreserve)
 
 A tool to check the status of a weblink and also see whether it is archived
 in the [Internet Archive](https://archive.org/). 
