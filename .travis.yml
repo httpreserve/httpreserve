@@ -1,6 +1,10 @@
 language: go
 go_import_path: github.com/exponential-decay/httpreserve
 go:
+  - 1.4.3
+  - 1.5.4
+  - 1.6.3
+  - 1.7.3
   - 1.8.x
   - tip
 
