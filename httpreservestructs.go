@@ -11,6 +11,7 @@ type LinkStats struct {
 	FileName                    string // If a filename is provided
 	AnalysisVersionNumber       string
 	AnalysisVersionText         string
+	SimpleRequestVersion        string
 	Link                        string
 	Title                       string
 	ContentType                 string

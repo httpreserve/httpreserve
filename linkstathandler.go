@@ -49,6 +49,7 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 
 	ls.AnalysisVersionText = VersionText()
 	ls.AnalysisVersionNumber = VersionNumber()
+	ls.SimpleRequestVersion = simplerequest.Version()
 
 	iaURLearliest, err := GetPotentialURLEarliest(ls.Link)
 	if err != nil {
