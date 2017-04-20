@@ -11,7 +11,7 @@ import (
 // Call handlehttp from a SimpleRequest object instead
 // of calling function directly...
 func HTTPFromSimpleRequest(sr simplerequest.SimpleRequest) (LinkStats, error) {
-	
+
 	//set some values for the simplerequest...
 	sr.Timeout(10)
 	sr.Agent(VersionText())
@@ -24,7 +24,7 @@ func HTTPFromSimpleRequest(sr simplerequest.SimpleRequest) (LinkStats, error) {
 
 // Handle HTTP functions of the calling application.
 func getLinkStats(req simplerequest.SimpleRequest) (LinkStats, error) {
-	// We're going to have some data to work with so lets 
+	// We're going to have some data to work with so lets
 	// start populating our LinkStats struct
 	var ls LinkStats
 	sr, err := req.Do()
