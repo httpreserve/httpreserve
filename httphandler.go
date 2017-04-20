@@ -17,7 +17,7 @@ func defaultSimpleRequest(reqURL *url.URL) SimpleRequest {
 	// we're not concerned about error here, as internally, we've
 	// already parsed the URL which is the only source of potential
 	// error in CreateSimpleRequest
-	sr, _ := CreateSimpleRequest(httpGET, reqURL.String(), useProxy, httpBYTERANGE)
+	sr, _ := CreateSimpleRequest(httpGET, reqURL.String(), httpBYTERANGE)
 	return sr
 }
 
@@ -29,7 +29,7 @@ func defaultSimpleRequest(reqURL *url.URL) SimpleRequest {
 // recommended setting for byterange is to maintain the default
 // but the potential to set it manually here is possible
 // If byterange is left "" then default range will be used.
-func CreateSimpleRequest(method string, reqURL string, proxy bool, byterange string) (SimpleRequest, error) {
+func CreateSimpleRequest(method string, reqURL string, byterange string) (SimpleRequest, error) {
 	var sr SimpleRequest
 	sr.Method = method
 	req, err := url.Parse(reqURL)
@@ -37,7 +37,6 @@ func CreateSimpleRequest(method string, reqURL string, proxy bool, byterange str
 		return sr, errors.Wrap(err, "url parse failed in CreateSimpleRequest")
 	}
 	sr.ReqURL = req
-	sr.Proxy = proxy
 	if byterange == "" {
 		sr.ByteRange = httpBYTERANGE
 	} else {
@@ -51,13 +50,12 @@ func CreateSimpleRequest(method string, reqURL string, proxy bool, byterange str
 // Call handlehttp from a SimpleRequest object instead
 // of calling function directly...
 func HTTPFromSimpleRequest(sr SimpleRequest) (LinkStats, error) {
-	ls, err := handlehttp(sr.Method, sr.ReqURL, sr.Proxy, sr.ByteRange)
+	ls, err := handlehttp(sr.Method, sr.ReqURL, sr.ByteRange)
 	return ls, err
 }
 
-// Handle HTTP functions of the calling application. If we need to use
-// a proxy then set the flag, if not, then don't.
-func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (LinkStats, error) {
+// Handle HTTP functions of the calling application.
+func handlehttp(method string, reqURL *url.URL, byterange string) (LinkStats, error) {
 
 	var ls LinkStats
 	timeout := time.Duration(10 * time.Second)
@@ -71,18 +69,10 @@ func handlehttp(method string, reqURL *url.URL, proxy bool, byterange string) (L
 	}
 	req.Header.Add("User-Agent", VersionText())
 	req.Header.Add("Range", byterange)
-	req.Header.Add("proxy-Connection", "Keep-Alive")
 
 	// start adding to our LinkStat struct as soon as possible
 	ls.link = reqURL
 	ls.Link = reqURL.String()
-
-	if proxy {
-		client, err = returnProxyClient(req)
-		if err != nil {
-			return ls, errors.Wrap(err, "proxy header creation failed")
-		}
-	}
 
 	// A mechanism for users to debug their code using Request headers
 	rq, _ := httputil.DumpRequest(req, false)
