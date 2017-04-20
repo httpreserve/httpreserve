@@ -1,6 +1,7 @@
 package httpreserve
 
 import (
+	"github.com/httpreserve/simplerequest"
 	"github.com/pkg/errors"
 	"net/url"
 )
@@ -21,7 +22,7 @@ func testConnection(requrl string) (LinkStats, error) {
 	case "http":
 		fallthrough
 	case "https":
-		ls, err = HTTPFromSimpleRequest(defaultSimpleRequest(req))
+		ls, err = HTTPFromSimpleRequest(simplerequest.Default(req))
 		if err != nil {
 			return ls, errors.Wrap(err, "handlehttp() failed")
 		}

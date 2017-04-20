@@ -1,84 +1,33 @@
 package httpreserve
 
 import (
+	"github.com/httpreserve/simplerequest"
 	"github.com/pkg/errors"
-	"io/ioutil"
-	"net/http"
-	"net/http/httputil"
-	"net/url"
 	"strings"
-	"time"
 )
-
-// At least for testing we're going to be doing a limited range
-// of things with our requests. Create a default object to make that
-// easier for us.
-func defaultSimpleRequest(reqURL *url.URL) SimpleRequest {
-	// we're not concerned about error here, as internally, we've
-	// already parsed the URL which is the only source of potential
-	// error in CreateSimpleRequest
-	sr, _ := CreateSimpleRequest(httpGET, reqURL.String(), httpBYTERANGE)
-	return sr
-}
-
-// CreateSimpleRequest is a mechanism to make a suitable
-// http request header to find some information out about
-// a web resouse.
-// We want to make handlehttp more useable so let's wrap
-// as much as we can up front and see if that's possible
-// recommended setting for byterange is to maintain the default
-// but the potential to set it manually here is possible
-// If byterange is left "" then default range will be used.
-func CreateSimpleRequest(method string, reqURL string, byterange string) (SimpleRequest, error) {
-	var sr SimpleRequest
-	sr.Method = method
-	req, err := url.Parse(reqURL)
-	if err != nil {
-		return sr, errors.Wrap(err, "url parse failed in CreateSimpleRequest")
-	}
-	sr.ReqURL = req
-	if byterange == "" {
-		sr.ByteRange = httpBYTERANGE
-	} else {
-		sr.ByteRange = byterange
-	}
-	return sr, nil
-}
 
 // HTTPFromSimpleRequest is another mechanism we can use to
 // retrieve some basic information out from a web resource.
 // Call handlehttp from a SimpleRequest object instead
 // of calling function directly...
-func HTTPFromSimpleRequest(sr SimpleRequest) (LinkStats, error) {
-	ls, err := handlehttp(sr.Method, sr.ReqURL, sr.ByteRange)
+func HTTPFromSimpleRequest(sr simplerequest.SimpleRequest) (LinkStats, error) {
+	
+	//set some values for the simplerequest...
+	sr.Timeout(10)
+	sr.Agent(VersionText())
+	sr.Byterange("500")
+
+	//retrieve our link stats...
+	ls, err := getLinkStats(sr)
 	return ls, err
 }
 
 // Handle HTTP functions of the calling application.
-func handlehttp(method string, reqURL *url.URL, byterange string) (LinkStats, error) {
-
+func getLinkStats(req simplerequest.SimpleRequest) (LinkStats, error) {
+	// We're going to have some data to work with so lets 
+	// start populating our LinkStats struct
 	var ls LinkStats
-	timeout := time.Duration(10 * time.Second)
-	var client = &http.Client{
-		Timeout: timeout,
-	}
-
-	req, err := http.NewRequest(method, reqURL.String(), nil)
-	if err != nil {
-		return ls, errors.Wrap(err, "request generation failed")
-	}
-	req.Header.Add("User-Agent", VersionText())
-	req.Header.Add("Range", byterange)
-
-	// start adding to our LinkStat struct as soon as possible
-	ls.link = reqURL
-	ls.Link = reqURL.String()
-
-	// A mechanism for users to debug their code using Request headers
-	rq, _ := httputil.DumpRequest(req, false)
-	ls.prettyRequest = string(rq)
-
-	resp, err := client.Do(req)
+	sr, err := req.Do()
 	if err != nil {
 		if strings.Contains(err.Error(), "lookup") &&
 			strings.Contains(err.Error(), "no such host") {
@@ -95,33 +44,29 @@ func handlehttp(method string, reqURL *url.URL, byterange string) (LinkStats, er
 		return ls, err
 	}
 
-	// once we've closed the body we can't do anything else
-	// with the packet content...
-	data, err := ioutil.ReadAll(resp.Body)
-	resp.Body.Close()
-	if err != nil {
-		return ls, errors.Wrap(err, "reading http response body")
-	}
+	// start adding to our LinkStat struct as soon as possible
+	ls.link = req.URL
+	ls.Link = req.URL.String()
 
-	// A mechanism for users to debug their code using Response headers
-	re, _ := httputil.DumpResponse(resp, false)
-	ls.prettyResponse = string(re)
+	//Get our pretty printed output for debug etc.
+	ls.prettyRequest = sr.PrettyRequest
+	ls.prettyResponse = sr.PrettyResponse
 
 	// Response Codes...
-	ls.ResponseCode = resp.StatusCode
-	ls.ResponseText = http.StatusText(resp.StatusCode)
+	ls.ResponseCode = sr.StatusCode
+	ls.ResponseText = sr.StatusText
 
 	// Populate LS Title and Content-Type
-	ls.ContentType = resp.Header.Get("Content-Type")
-	ls.Title = getTitle(string(data), ls.ContentType)
+	ls.ContentType = sr.GetHeader("Content-Type")
+
+	// Look at the payload to see if we can retrieve title...
+	ls.Title = getTitle(string(sr.Data), ls.ContentType)
 
 	// For debug record pertinent packet details...
-	ls.statuscode = resp.StatusCode
-	ls.status = resp.Status
-	ls.header = &resp.Header
+	ls.header = &sr.Header
 
 	// Do we have to do NT lan Manager negotiation...
-	if checkNTLM(resp, reqURL) {
+	if checkNTLM(sr) {
 		return ls, errors.New(errorNTLM)
 	}
 
@@ -150,9 +95,9 @@ func getTitle(body string, contentType string) string {
 // jump through. NTLM stands for NT Lan Management. If we receive
 // a cue to have to do NTLM authentication then we need to jump
 // through those hoops. We begin that process here.
-func checkNTLM(resp *http.Response, reqURL *url.URL) bool {
-	if resp.StatusCode == 407 {
-		if strings.Join(resp.Header[authNTLM], " ") == flagNTLM {
+func checkNTLM(sr simplerequest.SimpleResponse) bool {
+	if sr.StatusCode == 407 {
+		if strings.Join(sr.Header[authNTLM], " ") == flagNTLM {
 			// we have to do the NTLM DANCE here...
 			// https://github.com/exponential-decay/httpreserve/issues/1
 			return true

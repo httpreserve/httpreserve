@@ -2,6 +2,7 @@ package httpreserve
 
 import (
 	"encoding/json"
+	"github.com/httpreserve/simplerequest"	
 	"github.com/pkg/errors"
 	"net/http"
 	"net/http/httputil"
@@ -57,8 +58,8 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 	if !isIA(ls.Link) {
 		// We don't have to be concerned with error here is URL is already
 		// previously Parsed correctly, which we do so dilligently under iafunctions.go
-		isEarliest, err := CreateSimpleRequest(httpHEAD, iaURLearliest.String(), "")
-		earliestIA, err := HTTPFromSimpleRequest(isEarliest)
+		sr, err := simplerequest.Create(simplerequest.HEAD, iaURLearliest.String())
+		earliestIA, err := HTTPFromSimpleRequest(sr)
 		if err != nil {
 			ls.InternetArchiveResponseText = err.Error()
 			return ls, errors.Wrap(err, "IA http request failed")

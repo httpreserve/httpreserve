@@ -5,26 +5,6 @@ import (
 	"net/url"
 )
 
-// HTTP request methods that are useful to us
-const httpGET = http.MethodGet
-const httpHEAD = http.MethodHead
-
-// Default byte-range for initial requests
-// use first 0.5mb to find <title> tag...
-const httpBYTERANGE = "bytes=0-500"
-
-// Default proxy value we might set on compilation
-const useProxy = false
-
-// SimpleRequest structure to be turned into a
-// HTTP request proper in code.
-type SimpleRequest struct {
-	Method    string
-	ReqURL    *url.URL
-	Proxy     bool
-	ByteRange string
-}
-
 // LinkStats Table structure to be returned from our
 // requests Can be fairly liberal in its expansion
 type LinkStats struct {
