@@ -3,11 +3,11 @@ package httpreserve
 import (
 	"encoding/json"
 	"github.com/httpreserve/simplerequest"
+	"github.com/httpreserve/wayback"
 	"github.com/pkg/errors"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"strings"
 )
 
 // GetLinkStatsHeader allows us to do some debug on the information
@@ -51,57 +51,30 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 	ls.AnalysisVersionNumber = VersionNumber()
 	ls.SimpleRequestVersion = simplerequest.Version()
 
-	iaURLearliest, err := GetPotentialURLEarliest(ls.Link)
+	wb, err := wayback.GetWaybackData(ls.Link)
 	if err != nil {
-		return ls, errors.Wrap(err, "IA url creation failed")
+		return ls, err
 	}
 
-	if !isIA(ls.Link) {
-		// We don't have to be concerned with error here is URL is already
-		// previously Parsed correctly, which we do so dilligently under iafunctions.go
-		sr, err := simplerequest.Create(simplerequest.HEAD, iaURLearliest.String())
-		earliestIA, err := HTTPFromSimpleRequest(sr)
-		if err != nil {
-			ls.InternetArchiveResponseText = err.Error()
-			return ls, errors.Wrap(err, "IA http request failed")
-		}
-		// Add out Internet Archive Response Code to ours...
-		ls = addResponses(ls, earliestIA)
-
-		// First test for existence of an internet archive copy
-		if earliestIA.ResponseCode == http.StatusNotFound {
-			if earliestIA.header.Get("Link") == "" {
-				return ls, errors.New(errorNoIALink)
-			}
+	// else process the response...
+	if wb.AlreadyWayback == nil {
+		if wb.NotInWayback == false {
+			ls.InternetArchiveLinkEarliest = wb.EarliestWayback
+			ls.InternetArchiveLinkLatest = wb.LatestWayback
+		} else {
+			ls.Archived = false
 		}
 
-		// Else, continue to retrieve IA links
-		iaLinkData := earliestIA.header.Get("Link")
-		iaLinkInfo := strings.Split(iaLinkData, ", <")
+		ls.InternetArchiveResponseCode = wb.ResponseCode
+		ls.InternetArchiveResponseText = wb.ResponseText
 
-		var legacyCollection = make(map[string]string)
-
-		for _, lnk := range iaLinkInfo {
-			trimmedlink := strings.Trim(lnk, " ")
-			trimmedlink = strings.Replace(trimmedlink, ">;", ";", 1) // fix chevrons
-			for _, rel := range iaRelList {
-				if strings.Contains(trimmedlink, rel) {
-					legacyCollection[rel] = trimmedlink
-					break
-				}
-			}
+		// plus a bit more to understand if the link is archived
+		if !(ls.InternetArchiveResponseCode == http.StatusNotFound || ls.InternetArchiveResponseCode == 0) {
+			ls.Archived = true
 		}
-
-		// We've some internet archive links that we can use
-		if len(legacyCollection) > 0 {
-			ls = populateIALinks(ls, legacyCollection)
-		}
-
-		ls = addSaveURL(ls)
-
-	} else {
-		ls.InternetArchiveSaveLink = ErrorIAExists
 	}
+
+	ls.InternetArchiveSaveLink = wb.WaybackSaveURL
 
 	return ls, nil
 }
@@ -129,58 +102,4 @@ func manageLinkStatErrors(ls LinkStats, err error) (LinkStats, error) {
 		return ls, errors.Wrap(err, "LinkStat failed")
 	}
 	return ls, nil
-}
-
-// Add the Internet Archive response codes to our structure
-// for analysis outside of the package.
-func addResponses(ls LinkStats, ia LinkStats) LinkStats {
-	ls.InternetArchiveResponseCode = ia.ResponseCode
-	ls.InternetArchiveResponseText = ia.ResponseText
-	if ia.ResponseCode == http.StatusNotFound || ia.ResponseCode == 0 {
-		ls.Archived = false
-	} else {
-		ls.Archived = true
-	}
-	return ls
-}
-
-// Add the Internet Archive save link to our linkstat struct
-// to enable saving of the most up-to-date version of the resource
-func addSaveURL(ls LinkStats) LinkStats {
-	ls.InternetArchiveSaveLink = MakeSaveURL(ls.Link)
-	return ls
-}
-
-// We are interested in the earliest link available in the
-// Internet Archive and the latest link available, return the strings here.
-func populateIALinks(ls LinkStats, legacyCollection map[string]string) LinkStats {
-	for rel, lnk := range legacyCollection {
-		switch rel {
-		// first two cases give us the earliest IA link available
-		case relFirst:
-			fallthrough
-		case relFirstLast:
-			ls.InternetArchiveLinkEarliest = getWWW(lnk)
-			break
-		// second two cases give us the latest IA link available
-		case relLast:
-			fallthrough
-		case relNextLast:
-			ls.InternetArchiveLinkLatest = getWWW(lnk)
-			break
-		}
-	}
-	return ls
-}
-
-// Retrieve the IA www link that we've been passing about
-// from the IA response header sent to us previously.
-func getWWW(lnk string) string {
-	lnksplit := strings.Split(lnk, "; ")
-	for _, www := range lnksplit {
-		if strings.Contains(www, iaRoot) {
-			return www
-		}
-	}
-	return ""
 }

@@ -2,6 +2,7 @@ package httpreserve
 
 import (
 	"github.com/httpreserve/simplerequest"
+	"github.com/httpreserve/wayback"
 	"github.com/pkg/errors"
 	"net/url"
 )
@@ -60,7 +61,7 @@ func GenerateLinkStats(link string, fname string) (LinkStats, error) {
 	// Positive or negative result, populate LS structure
 	ls, err = makeLinkStats(ls, err)
 	if err != nil {
-		if err.Error() == errorNoIALink {
+		if err.Error() == wayback.ErrorNoIALink.Error() { // TODO: may be able to remove
 			// we can ignore this, not a fatal error
 		} else {
 			return ls, err
