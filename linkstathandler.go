@@ -2,12 +2,14 @@ package httpreserve
 
 import (
 	"encoding/json"
+	"github.com/httpreserve/gnomescreenshot"
 	"github.com/httpreserve/simplerequest"
 	"github.com/httpreserve/wayback"
 	"github.com/pkg/errors"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"strings"
 )
 
 // GetLinkStatsHeader allows us to do some debug on the information
@@ -76,7 +78,22 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 
 	ls.InternetArchiveSaveLink = wb.WaybackSaveURL
 
+	//finally, add a screenshot to our LinkStats struct
+	ls.ScreenShot = addScreenshot(ls)
+
 	return ls, nil
+}
+
+func addScreenshot(ls LinkStats) string {
+	link, err := gnomescreenshot.GrabScreenshot(ls.Link)
+	if err != nil {
+		if strings.Contains(link, gnomescreenshot.EncodingField) {
+			//good chance we still have an image to decode
+			return link
+		}
+		return err.Error()
+	}
+	return link
 }
 
 // Format our output to be useful to external callers
