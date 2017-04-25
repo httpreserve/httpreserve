@@ -66,7 +66,7 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 		ls.InternetArchiveResponseText = wb.ResponseText
 		if err != nil {
 			ls.InternetArchiveResponseText = err.Error()
-		} 
+		}
 
 		// plus a bit more to understand if the link is archived
 		if !(ls.InternetArchiveResponseCode == http.StatusNotFound || ls.InternetArchiveResponseCode == 0) {
