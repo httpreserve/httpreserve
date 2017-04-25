@@ -18,15 +18,17 @@ func HTTPFromSimpleRequest(sr simplerequest.SimpleRequest) (LinkStats, error) {
 	sr.Byterange("500")
 
 	//retrieve our link stats...
-	ls, err := getLinkStats(sr)
-	return ls, err
+	return getLinkStats(sr)
 }
 
 // Handle HTTP functions of the calling application.
 func getLinkStats(req simplerequest.SimpleRequest) (LinkStats, error) {
-	// We're going to have some data to work with so lets
-	// start populating our LinkStats struct
 	var ls LinkStats
+
+	//populate linkstats asap...
+	ls.link = req.URL
+	ls.Link = req.URL.String()
+
 	sr, err := req.Do()
 	if err != nil {
 		if strings.Contains(err.Error(), "lookup") &&

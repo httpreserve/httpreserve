@@ -51,12 +51,8 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 	ls.AnalysisVersionNumber = VersionNumber()
 	ls.SimpleRequestVersion = simplerequest.Version()
 
-	wb, err := wayback.GetWaybackData(ls.Link)
-	if err != nil {
-		return ls, err
-	}
-
-	// else process the response...
+	wb, err := wayback.GetWaybackData(ls.Link, VersionText())
+	// else process the response and error...
 	if wb.AlreadyWayback == nil {
 		if wb.NotInWayback == false {
 			ls.InternetArchiveLinkEarliest = wb.EarliestWayback
@@ -66,7 +62,11 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 		}
 
 		ls.InternetArchiveResponseCode = wb.ResponseCode
+
 		ls.InternetArchiveResponseText = wb.ResponseText
+		if err != nil {
+			ls.InternetArchiveResponseText = err.Error()
+		} 
 
 		// plus a bit more to understand if the link is archived
 		if !(ls.InternetArchiveResponseCode == http.StatusNotFound || ls.InternetArchiveResponseCode == 0) {
