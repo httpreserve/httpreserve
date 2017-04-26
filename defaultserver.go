@@ -13,6 +13,12 @@ func httpreserve(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// Save handler for httpreserve requests
+func savelink(w http.ResponseWriter, r *http.Request) {
+	handleSubmitToInternetArchive(w, r)
+	return
+}
+
 // 404 response handler for all non supported function
 func notFound(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
@@ -86,6 +92,7 @@ func configureDefault() http.Handler {
 
 	//Routes and handlers...
 	h.HandleFunc("/httpreserve", httpreserve)
+	h.HandleFunc("/save", savelink)
 	h.HandleFunc("/", indexhandler)
 	h.Handle("/static/", http.StripPrefix("/static/", fs))
 

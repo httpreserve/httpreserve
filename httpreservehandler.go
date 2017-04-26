@@ -2,7 +2,7 @@ package httpreserve
 
 import (
 	"fmt"
-	"log"
+	"github.com/httpreserve/wayback"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -18,6 +18,49 @@ const errMultiFname = "no filename, or more than one filename specified, setting
 // A default value
 var defaultServerMethod = http.MethodPost
 
+// Use this function to retrieve all the args sent to the handler
+func getLinkFname(w http.ResponseWriter, r *http.Request) (string, string, string) {
+
+	var link string
+	var fname string
+
+	switch r.Method {
+	case http.MethodGet:
+		lookup, err := url.ParseQuery(r.URL.RawQuery)
+		if err != nil {
+			return "", "", errParsingQuery
+		}
+
+		if val, ok := lookup[requestedURL]; ok {
+			if len(val) > 0 && len(val) < 2 {
+				link = val[0]
+			}
+		}
+
+		if link == "" {
+			return "", "", errNoURL
+		}
+
+		if val, ok := lookup[requestedFname]; ok {
+			if len(val) > 0 && len(val) < 2 {
+				fname = val[0]
+			}
+		}
+
+		// consider logging fnames
+		//if fname == "" {
+		//	return "", "", errMultiFname
+		//}
+
+	case http.MethodPost:
+		r.ParseForm()
+		link = r.Form.Get(requestedURL)
+		fname = r.Form.Get(requestedFname)
+	}
+
+	return link, fname, ""
+}
+
 // For debug, we have this function here just in case we need
 // to take a look at our request headers...
 func prettyRequest(w http.ResponseWriter, r *http.Request) {
@@ -29,50 +72,46 @@ func prettyRequest(w http.ResponseWriter, r *http.Request) {
 // Primary handler of all POST or GET requests to httpreserve
 // pretty simple eh?!
 func handleHttpreserve(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		lookup, err := url.ParseQuery(r.URL.RawQuery)
-		if err != nil {
-			fmt.Fprintf(w, "%s\n", errParsingQuery)
-		}
-
-		var link string
-		var fname string
-
-		if val, ok := lookup[requestedURL]; ok {
-			if len(val) > 0 && len(val) < 2 {
-				link = val[0]
-			}
-		}
-
-		if link == "" {
-			fmt.Fprintf(w, "%s %s\n", errParsingQuery, errNoURL)
-			return
-		}
-
-		if val, ok := lookup[requestedFname]; ok {
-			if len(val) > 0 && len(val) < 2 {
-				fname = val[0]
-			}
-		}
-
-		if fname == "" {
-			log.Printf("%s %s", r.RemoteAddr, errMultiFname)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintln(w, retrieveLinkStats(link, fname))
-		return
-	case http.MethodPost:
-		r.ParseForm()
-		link := r.Form.Get(requestedURL)
-		fname := r.Form.Get(requestedFname)
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintln(w, retrieveLinkStats(link, fname))
+	// get our variable values
+	link, fname, e := getLinkFname(w, r)
+	if e != "" {
+		w.Header().Set("Content-Type", "text/plain")
+		fmt.Fprintln(w, e)
 		return
 	}
+
+	// push json to client
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintln(w, retrieveLinkStats(link, fname))
+	return
 }
 
+// submit link to internet archive
+func handleSubmitToInternetArchive(w http.ResponseWriter, r *http.Request) {
+
+	// get our variable values
+	link, fname, e := getLinkFname(w, r)
+	if e != "" {
+		w.Header().Set("Content-Type", "text/plain")
+		fmt.Fprintln(w, e)
+		return
+	}
+
+	// else continue to submit to internet archive
+	_, err := wayback.SubmitToInternetArchive(link, VersionText())
+	if err != nil {
+		w.Header().Set("Content-Type", "text/plain")
+		fmt.Fprintln(w, "saving link to archive didn't work,", err.Error())
+		return
+	}
+
+	// push json to client
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintln(w, retrieveLinkStats(link, fname))
+	return
+}
+
+// retrieve linkstats from httpreserve
 func retrieveLinkStats(link string, fname string) string {
 	ls, _ := GenerateLinkStats(link, fname)
 	js := MakeLinkStatsJSON(ls)
