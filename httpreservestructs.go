@@ -24,8 +24,8 @@ type LinkStats struct {
 	InternetArchiveResponseCode int
 	InternetArchiveResponseText string
 	Archived                    bool // Has the Internet Archive saved the page or not?
-	ProtocolError               bool
-	ProtocolErrorMessage        string
+	Error               bool
+	ErrorMessage        string
 
 	// For debug
 	status     string

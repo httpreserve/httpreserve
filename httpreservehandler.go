@@ -47,11 +47,6 @@ func getLinkFname(w http.ResponseWriter, r *http.Request) (string, string, strin
 			}
 		}
 
-		// consider logging fnames
-		//if fname == "" {
-		//	return "", "", errMultiFname
-		//}
-
 	case http.MethodPost:
 		r.ParseForm()
 		link = r.Form.Get(requestedURL)
@@ -89,31 +84,38 @@ func handleHttpreserve(w http.ResponseWriter, r *http.Request) {
 // submit link to internet archive
 func handleSubmitToInternetArchive(w http.ResponseWriter, r *http.Request) {
 
+	// push json to client
+	w.Header().Set("Content-Type", "application/json")
+
+	var ls LinkStats
+
 	// get our variable values
 	link, fname, e := getLinkFname(w, r)
 	if e != "" {
-		w.Header().Set("Content-Type", "text/plain")
-		fmt.Fprintln(w, e)
+		ls.Error = true
+		ls.ErrorMessage = e
+		fmt.Fprintln(w, MakeLinkStatsJSON(ls))
 		return
 	}
 
 	// else continue to submit to internet archive
 	_, err := wayback.SubmitToInternetArchive(link, VersionText())
 	if err != nil {
-		w.Header().Set("Content-Type", "text/plain")
-		fmt.Fprintln(w, "saving link to archive didn't work,", err.Error())
+		ls.FileName = fname
+		ls.Link = link
+		ls.Error = true
+		ls.ErrorMessage = "saving link to archive didn't work, " + err.Error()
+		fmt.Fprintln(w, MakeLinkStatsJSON(ls))
 		return
 	}
 
-	// push json to client
-	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintln(w, retrieveLinkStats(link, fname))
 	return
 }
 
 // retrieve linkstats from httpreserve
 func retrieveLinkStats(link string, fname string) string {
-	ls, _ := GenerateLinkStats(link, fname)
+	ls, _ := GenerateLinkStats(link, fname, true)
 	js := MakeLinkStatsJSON(ls)
 	return js
 }

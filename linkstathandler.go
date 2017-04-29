@@ -85,13 +85,16 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 }
 
 func addScreenshot(ls LinkStats) string {
-	link, err := phantomjsscreenshot.GrabScreenshot(ls.Link)
-	if err != nil {
-		if strings.Contains(link, phantomjsscreenshot.EncodingField) {
-			//good chance we still have an image to decode
-			return link
+	var link string
+	if snapshot {
+		link, err := phantomjsscreenshot.GrabScreenshot(ls.Link)
+		if err != nil {
+			if strings.Contains(link, phantomjsscreenshot.EncodingField) {
+				//good chance we still have an image to decode
+				return link
+			}
+			return err.Error()
 		}
-		return err.Error()
 	}
 	return link
 }
@@ -109,12 +112,12 @@ func makeLinkStatJSON(ls LinkStats) (string, error) {
 // work with as and when we need to, example, zero protocol
 func manageLinkStatErrors(ls LinkStats, err error) (LinkStats, error) {
 	//report error in some way...
-	ls.ProtocolError = true
+	ls.Error = true
 	switch err.Error() {
 	case errorBlankProtocol:
-		ls.ProtocolErrorMessage = errorBlankProtocol
+		ls.ErrorMessage = errorBlankProtocol
 	case errorUnknownProtocol:
-		ls.ProtocolErrorMessage = errorUnknownProtocol
+		ls.ErrorMessage = errorUnknownProtocol
 	default:
 		return ls, errors.Wrap(err, "LinkStat failed")
 	}
