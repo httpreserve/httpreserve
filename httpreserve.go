@@ -56,7 +56,7 @@ var snapshot = true
 // GenerateLinkStats is used to return a JSON object for a URL
 // specified in link variable passed to the function.
 func GenerateLinkStats(link string, fname string, screengrab bool) (LinkStats, error) {
-	
+
 	// set global variable to help folks limit data sent by screenshots
 	if screengrab != true {
 		snapshot = false
