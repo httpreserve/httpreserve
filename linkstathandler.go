@@ -2,7 +2,7 @@ package httpreserve
 
 import (
 	"encoding/json"
-	"github.com/httpreserve/gnomescreenshot"
+	"github.com/httpreserve/phantomjsscreenshot"
 	"github.com/httpreserve/simplerequest"
 	"github.com/httpreserve/wayback"
 	"github.com/pkg/errors"
@@ -85,9 +85,9 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 }
 
 func addScreenshot(ls LinkStats) string {
-	link, err := gnomescreenshot.GrabScreenshot(ls.Link)
+	link, err := phantomjsscreenshot.GrabScreenshot(ls.Link)
 	if err != nil {
-		if strings.Contains(link, gnomescreenshot.EncodingField) {
+		if strings.Contains(link, phantomjsscreenshot.EncodingField) {
 			//good chance we still have an image to decode
 			return link
 		}
