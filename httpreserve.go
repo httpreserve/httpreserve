@@ -52,6 +52,7 @@ func linkStat(url string) (LinkStats, error) {
 
 // generate screenshots...
 var snapshot = true
+var snapshotmessage = "snapshots not enabled"
 
 // GenerateLinkStats is used to return a JSON object for a URL
 // specified in link variable passed to the function.

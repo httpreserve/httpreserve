@@ -85,7 +85,6 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 }
 
 func addScreenshot(ls LinkStats) string {
-	var link string
 	if snapshot {
 		link, err := phantomjsscreenshot.GrabScreenshot(ls.Link)
 		if err != nil {
@@ -96,7 +95,7 @@ func addScreenshot(ls LinkStats) string {
 			return err.Error()
 		}
 	}
-	return link
+	return snapshotmessage
 }
 
 // Format our output to be useful to external callers
