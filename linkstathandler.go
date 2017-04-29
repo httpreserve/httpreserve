@@ -85,8 +85,10 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 }
 
 func addScreenshot(ls LinkStats) string {
-	if snapshot {
-		link, err := phantomjsscreenshot.GrabScreenshot(ls.Link)
+	var link string
+	var err error
+	if snapshot == true {
+		link, err = phantomjsscreenshot.GrabScreenshot(ls.Link)
 		if err != nil {
 			if strings.Contains(link, phantomjsscreenshot.EncodingField) {
 				//good chance we still have an image to decode
@@ -94,8 +96,10 @@ func addScreenshot(ls LinkStats) string {
 			}
 			return err.Error()
 		}
+	} else {
+		link = snapshotmessage
 	}
-	return snapshotmessage
+	return link
 }
 
 // Format our output to be useful to external callers
