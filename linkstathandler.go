@@ -79,8 +79,11 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 	ls.InternetArchiveSaveLink = wb.WaybackSaveURL
 
 	//finally, add a screenshot to our LinkStats struct
-	ls.ScreenShot = addScreenshot(ls)
-
+	if ls.ResponseCode != 0 && ls.ResponseCode < 400 {
+		ls.ScreenShot = addScreenshot(ls)
+	} else {
+		ls.ScreenShot = ResponseIncorrect
+	}
 	return ls, nil
 }
 
@@ -94,10 +97,10 @@ func addScreenshot(ls LinkStats) string {
 				//good chance we still have an image to decode
 				return link
 			}
-			return err.Error()
+			return GenerateSnapshotErr + " " + err.Error()
 		}
 	} else {
-		link = snapshotmessage
+		link = SnapshotNotEnabled
 	}
 	return link
 }

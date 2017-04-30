@@ -37,9 +37,6 @@ func testConnection(requrl string) (LinkStats, error) {
 		ls.Link = req.String()
 		return ls, errors.Wrap(errors.New(errorUnknownProtocol), req.Scheme)
 	}
-	ls.link = req
-	ls.Link = req.String()
-	return ls, nil
 }
 
 // Function that wraps testconnection, we may refactor this at
@@ -49,10 +46,6 @@ func linkStat(url string) (LinkStats, error) {
 	ls, err := testConnection(url)
 	return ls, err
 }
-
-// generate screenshots...
-var snapshot = true
-var snapshotmessage = "snapshots are not currently enabled"
 
 // GenerateLinkStats is used to return a JSON object for a URL
 // specified in link variable passed to the function.
