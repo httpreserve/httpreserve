@@ -5,7 +5,11 @@ import (
 	"github.com/httpreserve/wayback"
 	"github.com/pkg/errors"
 	"net/url"
+	"time"
 )
+
+var starttime time.Time
+var elapsedtime time.Duration
 
 // Httpreserves primary handler for different protocols
 func testConnection(requrl string) (LinkStats, error) {
@@ -23,6 +27,9 @@ func testConnection(requrl string) (LinkStats, error) {
 	case "http":
 		fallthrough
 	case "https":
+		// processing time
+		starttime = time.Now()
+
 		ls, err := HTTPFromSimpleRequest(simplerequest.Default(req))
 		if err != nil {
 			return ls, errors.Wrap(err, "handlehttp() failed")

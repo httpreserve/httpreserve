@@ -10,6 +10,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"strings"
+	"time"
 )
 
 // GetLinkStatsHeader allows us to do some debug on the information
@@ -84,7 +85,16 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 	} else {
 		ls.ScreenShot = ResponseIncorrect
 	}
+
+	ls = addTime(ls)
+
 	return ls, nil
+}
+
+func addTime(ls LinkStats) LinkStats {
+	elapsedtime = time.Since(starttime)
+	ls.StatsCreationTime = elapsedtime.String()
+	return ls
 }
 
 func addScreenshot(ls LinkStats) string {

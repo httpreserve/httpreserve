@@ -26,6 +26,7 @@ type LinkStats struct {
 	Archived                    bool // Has the Internet Archive saved the page or not?
 	Error                       bool
 	ErrorMessage                string
+	StatsCreationTime           string
 
 	// For debug
 	status     string
