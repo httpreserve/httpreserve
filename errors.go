@@ -16,4 +16,4 @@ var GenerateSnapshotErr = "error generating snapshot"
 
 // ResponseIncorrect tells us we haven't created a screenshot because
 // the domain is no longer in existence...
-var ResponseIncorrect = "not creating snapshot for response codes zero or 400"
+var ResponseIncorrect = "snapshots not created for response codes zero or greater than 400"

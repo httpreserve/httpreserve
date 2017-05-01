@@ -77,15 +77,13 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 		}
 	}
 
+	// attach a url for folks to save to wayback...
 	ls.InternetArchiveSaveLink = wb.WaybackSaveURL
 
-	//finally, add a screenshot to our LinkStats struct
-	if ls.ResponseCode != 0 && ls.ResponseCode < 400 {
-		ls.ScreenShot = addScreenshot(ls)
-	} else {
-		ls.ScreenShot = ResponseIncorrect
-	}
+	// finally, add a screenshot to our LinkStats struct
+	ls.ScreenShot = addScreenshot(ls)
 
+	// how long did it take to process this record...
 	ls = addTime(ls)
 
 	return ls, nil
@@ -101,6 +99,10 @@ func addScreenshot(ls LinkStats) string {
 	var link string
 	var err error
 	if snapshot == true {
+		if ls.ResponseCode == 0 || ls.ResponseCode > 400 {
+			link = ResponseIncorrect
+			return link
+		}
 		link, err = phantomjsscreenshot.GrabScreenshot(ls.Link)
 		if err != nil {
 			if strings.Contains(link, phantomjsscreenshot.EncodingField) {
