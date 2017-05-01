@@ -14,7 +14,7 @@ in the [Internet Archive](https://archive.org/).
 
 ## Default Server
 
-The library comes with a default servere mode that can be configured for
+The library comes with a default server mode that can be configured for
 POST and GET requests. POST by default. Default port is :2040 but this can
 also be selected at runtime.
 
