@@ -12,9 +12,11 @@
 A tool to check the status of a weblink and also see whether it is archived
 in the [Internet Archive](https://archive.org/). 
 
+Try it out here [httpreserve.info](http://httpreserve.info)
+
 ## Default Server
 
-The library comes with a default servere mode that can be configured for
+The library comes with a default server mode that can be configured for
 POST and GET requests. POST by default. Default port is :2040 but this can
 also be selected at runtime.
 
@@ -35,15 +37,29 @@ information about its capabilities.
 
 Primary entry point when the server is running:
 
-http://{httpreserve-ip-address}:{port}/httpreserve
+*http://{httpreserve-ip-address}:{port}/httpreserve*
+
+or 
+
+*http://{httpreserve-ip-address}:{port}/save*
 
 **GET** example:
 
-http://<i>{httpreserve-ip-address}:{port}</i>/httpreserve?url=http://www.google.com&filename=filename.txt
+* Return JSON struct with information about the service you requested:
+
+    [http://<i>{httpreserve-ip-address}:{port}</i>/httpreserve?url=http://www.google.com&filename=filename.txt](http://httpreserve.info/httpreserve?url=http://www.google.com&filename=filename.txt)
+
+* Manage a save request to the internet archive and return HTTPreserve struct:
+
+    [http://<i>{httpreserve-ip-address}:{port}</i>/save?url=http://www.google.com&filename=filename.txt](http://httpreserve.info/httpreserve?url=http://www.google.com&filename=filename.txt)
 
 **POST** example:
 
-Same access point, but encode url and filename in a <i>application/x-www-form-urlencoded</i> form.
+    Same access point, but encode url and filename in a <i>application/x-www-form-urlencoded</i> form.
+
+**INFO** example: 
+
+    TODO: Add some information to INFO response
 
 **RETURN** value:
 
@@ -56,15 +72,16 @@ Same access point, but encode url and filename in a <i>application/x-www-form-ur
          "Link": "http://www.bbc.co.uk/",
          "ResponseCode": 200,
          "ResponseText": "OK",
-         "ScreenShot": "",
+         "ScreenShot": "{base64 encoded data}",
          "InternetArchiveLinkLatest": "http://web.archive.org/web/20170326191259/http://www0.bbc.co.uk/",
          "InternetArchiveLinkEarliest": "http://web.archive.org/web/19961221203254/http://www0.bbc.co.uk/",
          "InternetArchiveSaveLink": "http://web.archive.org/save/http://www.bbc.co.uk/",
          "InternetArchiveResponseCode": 200,
          "InternetArchiveResponseText": "OK",
          "Archived": true,
-         "ProtocolError": false,
-         "ProtocolErrorMessage": ""
+         "Error": false,
+         "ErrorMessage": "",
+         "StatsCreationTime": "4.506728277s"
       }
 
 ## Archiving Weblinks
