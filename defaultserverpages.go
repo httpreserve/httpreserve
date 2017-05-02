@@ -144,7 +144,7 @@ var httpreservePages = `
 			div.wrap { margin: 0 auto ; width:715px; }
 			div.layout { margin-top: 50px; min-height: 100%; height: 250px; }
 
-			h4 { font-size: 16px;}
+			h4 { font-size: 16px; margin-bottom: -2px;}
 
 			input.link { display: block; margin: auto; width: 500px; }
 			input.button  { display: block; margin: auto; }
