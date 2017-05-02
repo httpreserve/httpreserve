@@ -3,8 +3,52 @@ package httpreserve
 import (
 	"github.com/httpreserve/simplerequest"
 	"github.com/pkg/errors"
+	"strconv"
 	"strings"
 )
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+
+// use a HEAD request to calibrate our own request to the server
+// return an integer if successful, and false for no request error
+// return zero if not successful, and true for error...
+func configureRequest(sr simplerequest.SimpleRequest) (string, bool) {
+
+	// first utilize the simplerequest we already have
+	srHead := sr
+	srHead.Method = simplerequest.HEAD
+
+	// try and ilicit a response from the server
+	resp, err := srHead.Do()
+	if err != nil {
+		return "", true
+	}
+
+	cl := resp.Header.Get("Content-Length")
+	if cl == "" {
+		return "", false
+	}
+
+	i, err := strconv.Atoi(cl)
+	if err != nil {
+		return "", false
+	}
+
+	// understand how we want to work with zeros length...
+	if i == 0 {
+		return "", false
+	}
+
+	// now return the minimum value we can retrieve from server
+	i = min(i, 500)
+
+	return strconv.Itoa(i), false
+}
 
 // HTTPFromSimpleRequest is another mechanism we can use to
 // retrieve some basic information out from a web resource.
@@ -12,10 +56,22 @@ import (
 // of calling function directly...
 func HTTPFromSimpleRequest(sr simplerequest.SimpleRequest) (LinkStats, error) {
 
-	//set some values for the simplerequest...
-	sr.Timeout(10)
+	// identify our agent, and then configure requesr...
 	sr.Agent(VersionText())
-	sr.Byterange("500")
+
+	// configure our values...
+	byterange, e := configureRequest(sr)
+
+	//set some values for the simplerequest...
+	if e {
+		sr.Timeout(5) // fail quick
+	} else {
+		sr.Timeout(10) // take our time if more potential
+	}
+
+	if byterange != "" {
+		sr.Byterange(byterange)
+	}
 
 	//retrieve our link stats...
 	return getLinkStats(sr)
