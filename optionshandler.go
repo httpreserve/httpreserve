@@ -20,8 +20,8 @@ _  __________ _____________________  _____
 var byline = "A service to help you audit the state of your\nweblinks."
 
 var instructions = `
-There are two things you can do with this service right now
-these are documented below.
+There are two things you can do with this service right 
+now these are documented below.
 
 See the status of your weblink:
 
@@ -67,7 +67,7 @@ The full suite of tools can be found at httpreserve suite.
 `
 
 func handleOptions(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, strings.Trim(welcome, " \n"), "\n")
-	fmt.Fprintln(w, byline, "\n")
-	fmt.Fprintln(w, strings.Trim(instructions, " \n"), "\n")
+	fmt.Fprintf(w, "%s\n\n", strings.Trim(welcome, " \n"))
+	fmt.Fprintf(w, "%s\n\n", byline)
+	fmt.Fprintf(w, "%s\n\n", strings.Trim(instructions, " \n"))
 }
