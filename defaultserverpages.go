@@ -141,6 +141,8 @@ var httpreservePages = `
 			body { min-width:750px; font-family: arial, verdana; font-size: 10px; margin-bottom: 20px}
 			figcaption { font-family: times new roman, arial, verdana; font-size: 20px; font-weight: bold; margin-bottom: 8px; }
 
+			figcaption.loading { font-family: arial, verdana; font-size: 8px; margin-top: -2px; font-weight: normal; }
+
 			div.wrap { margin: 0 auto ; width:715px; }
 			div.layout { margin-top: 50px; min-height: 100%; height: 250px; }
 
@@ -201,7 +203,7 @@ var httpreservePages = `
 `
 
 const loading = `
-'<img src="data:image/gif;base64,R0lGODlhKgAqAPcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEB
+'<figure><img src="data:image/gif;base64,R0lGODlhKgAqAPcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEB
 AQEBAQICAgQEBAUFBQcHBwkJCQwMDA8PDxISEhYWFhkZGRoaGhsbGxwcHB0dHR4eHh8fHyAgICEh
 ISIiIiMjIyQkJCUlJSYmJicnJygoKCkpKSoqKisrKywsLC0tLS4uLi8vLzAwMDExMTIyMjMzMzQ0
 NDU1NTY2Njc3Nzk5OTo6Ojs7Ozw8PD09PT09PT4+Pj8/P0BAQEBAQEFBQUJCQkJCQkNDQ0REREVF
@@ -721,5 +723,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" width="30px" height="30px" alt="loading"/>'
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" width="30px" height="30px" alt="loading"/>
+<figcaption class="loading">processing...</figcaption></figure>'
 `
