@@ -21,9 +21,9 @@ func savelink(w http.ResponseWriter, r *http.Request) {
 
 // 404 response handler for all non supported function
 func notFound(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprintln(w, "Sorry, this is not a supported function for this application.")
+	fmt.Fprintln(w, fourfour)
 }
 
 // Handle response when a page is requested by the browser
