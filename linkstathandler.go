@@ -6,12 +6,22 @@ import (
 	"github.com/httpreserve/simplerequest"
 	"github.com/httpreserve/wayback"
 	"github.com/pkg/errors"
+	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"strings"
 	"time"
 )
+
+var areyouthere = true
+
+func init() {
+	areyouthere = phantomjsscreenshot.Hello()
+	if !areyouthere {
+		log.Println("screenshot service cmd not installed or available on the $PATH")
+	}
+}
 
 // GetLinkStatsHeader allows us to do some debug on the information
 // returned from the server. First it mocks a response, and
@@ -98,7 +108,7 @@ func addTime(ls LinkStats) LinkStats {
 func addScreenshot(ls LinkStats) string {
 	var link string
 	var err error
-	if snapshot == true {
+	if snapshot == true && areyouthere == true {
 		if ls.ResponseCode == 0 || ls.ResponseCode > 400 {
 			link = ResponseIncorrect
 			return link
