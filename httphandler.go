@@ -81,9 +81,12 @@ func HTTPFromSimpleRequest(sr simplerequest.SimpleRequest) (LinkStats, error) {
 func getLinkStats(req simplerequest.SimpleRequest) (LinkStats, error) {
 	var ls LinkStats
 
-	//populate linkstats asap...
+	// populate linkstats asap...
 	ls.link = req.URL
 	ls.Link = req.URL.String()
+
+	// make sure if we get a url shortener we handle it on its merit...
+	req.NoRedirect(true)
 
 	sr, err := req.Do()
 	if err != nil {
@@ -100,6 +103,11 @@ func getLinkStats(req simplerequest.SimpleRequest) (LinkStats, error) {
 		// return and only continue to proces responses that there
 		// was no error for...
 		return ls, err
+	}
+
+	// we probably have a url shortening service...
+	if sr.Location != nil && sr.StatusCode == 301 {
+		return HTTPFromSimpleRequest(simplerequest.Default(sr.Location))
 	}
 
 	// start adding to our LinkStat struct as soon as possible
