@@ -3,6 +3,7 @@ package httpreserve
 import (
 	"fmt"
 	"github.com/httpreserve/wayback"
+	"github.com/httpreserve/simplerequest"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -81,6 +82,18 @@ func handleHttpreserve(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// test for a url shortening service
+func checkshort(link string) string {
+	u, _ := url.Parse(link)
+	sr := simplerequest.Default(u)
+	sr.NoRedirect(true)
+	resp, _ := sr.Do()
+	if resp.StatusCode == 301 && resp.Location != nil {
+		return resp.Location.String()
+	}
+	return ""
+}
+
 // submit link to internet archive
 func handleSubmitToInternetArchive(w http.ResponseWriter, r *http.Request) {
 
@@ -98,6 +111,11 @@ func handleSubmitToInternetArchive(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	unshort := checkshort(link)
+	if unshort != "" {
+		link = unshort
+	}
+	
 	// else continue to submit to internet archive
 	_, err := wayback.SubmitToInternetArchive(link, VersionText())
 	if err != nil {
