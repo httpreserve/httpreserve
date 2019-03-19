@@ -2,8 +2,8 @@ package httpreserve
 
 import (
 	"fmt"
-	"github.com/httpreserve/wayback"
 	"github.com/httpreserve/simplerequest"
+	"github.com/httpreserve/wayback"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -115,7 +115,7 @@ func handleSubmitToInternetArchive(w http.ResponseWriter, r *http.Request) {
 	if unshort != "" {
 		link = unshort
 	}
-	
+
 	// else continue to submit to internet archive
 	_, err := wayback.SubmitToInternetArchive(link, VersionText())
 	if err != nil {

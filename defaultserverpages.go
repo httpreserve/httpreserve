@@ -1,7 +1,6 @@
 package httpreserve
 
 import (
-	"log"
 	"net/http"
 	"strings"
 )
@@ -29,15 +28,12 @@ func GetDefaultServerPage(method string) string {
 	// let users change to GET if they so wish,
 	switch strings.ToUpper(method) {
 	case http.MethodGet:
-		log.Println("Default server HTTP method set to:", replaceGET)
 		httpreservePages = strings.Replace(httpreservePages, templateFormMethod, replaceGET, 1)
 		return httpreservePages
 	case http.MethodPost:
-		log.Println("Default server HTTP method set to:", replacePOST)
 		httpreservePages = strings.Replace(httpreservePages, templateFormMethod, replacePOST, 1)
 		return httpreservePages
 	default:
-		log.Printf("%s is not a valid HTTP method, setting to default: POST\n", method)
 		httpreservePages = strings.Replace(httpreservePages, templateFormMethod, replacePOST, 1)
 		return httpreservePages
 	}
@@ -51,7 +47,7 @@ var httpreservePages = `
 		<meta charset="utf-8">
 		<title>httpreserve</title>
 
-		<link id="favicon" rel="icon" type="image/x-icon" 
+		<link id="favicon" rel="icon" type="image/x-icon"
 		href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABm
 		JLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA
 		B3RJTUUH4QMZAiAVgKAUZQAAAGlJREFUWMPt1jkSgDAMQ9GYk/
@@ -67,10 +63,10 @@ var httpreservePages = `
 
 				var key="";
 				var value="";
-				
+
 				var method = myform.method;
 				var elements = myform.elements;
-		
+
 				var obj ={};
 				for(var i = 0 ; i < elements.length ; i++){
 					var item = elements.item(i);
@@ -110,13 +106,13 @@ var httpreservePages = `
 					xmlhttp.send(key + "=" + value);
 					return;
 				}
-		
+
 				if (method.toLowerCase() == "get") {
 					xmlhttp.open("GET", "httpreserve?" + key + "=" + value, true);
-					xmlhttp.send(key + "=" + value);   
+					xmlhttp.send(key + "=" + value);
 					return;
 				}
-		
+
 				document.getElementById("httpreserve-analysis").innerHTML = '[WARNING] issue parsing the form in JavaScript';
 			}
 
@@ -153,7 +149,7 @@ var httpreservePages = `
 
          /*use push to position footer more usefully on screen if necessary*/
          div.push { height: 340px; min-height: 340px; }
-         
+
          div.footer { height: 50px; margin: 0 auto ; width:200px; text-align: center; }
 		</style>
 	</head>
@@ -166,11 +162,11 @@ var httpreservePages = `
 			  	<figcaption>httpreserve</figcaption>
 				<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmc
 				vMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiIHZpZXdCb3g9IjAgMCA4IDgiPg0KIC
-				A8cGF0aCBkPSJNMCAwdjFoOHYtMWgtOHptNCAybC0zIDNoMnYzaDJ2LTNoMmwtMy0zeiIgLz4NCjwvc3ZnPg==" 
+				A8cGF0aCBkPSJNMCAwdjFoOHYtMWgtOHptNCAybC0zIDNoMnYzaDJ2LTNoMmwtMy0zeiIgLz4NCjwvc3ZnPg=="
 				width="50px" height="50px" alt="httpreserve"/>
 			</figure>
 		</center>
-		</p>   
+		</p>
 		<h4>Enter a URL:</h4>
 		<p>
 		This service will tell you if an internet archive link exists and give you a mechanism to save it as you wish.
@@ -195,10 +191,10 @@ var httpreservePages = `
 		A project by <a href="https://twitter.com/beet_keeper" alt="@beet_keeper on Twitter">@beet_keeper</a>
 		<br/>
 		On GitHub: <a href="https://github.com/exponential-decay/httpreserve" alt="httpreserve on GitHub">httpreserve</a>
-	</div>      
+	</div>
 	</div>
 	</body>
-	</html> 
+	</html>
 
 `
 

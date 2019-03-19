@@ -6,7 +6,6 @@ import (
 	"github.com/httpreserve/simplerequest"
 	"github.com/httpreserve/wayback"
 	"github.com/pkg/errors"
-	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -19,7 +18,7 @@ var areyouthere = true
 func init() {
 	areyouthere = phantomjsscreenshot.Hello()
 	if !areyouthere {
-		log.Println("screenshot service cmd not installed or available on the $PATH")
+		// screenshot service isn't available
 	}
 }
 
@@ -113,7 +112,7 @@ func addScreenshot(ls LinkStats) string {
 			link = ResponseIncorrect
 			return link
 		}
-		link, err = phantomjsscreenshot.GrabScreenshot(ls.Link)
+		link, err = phantomjsscreenshot.GrabScreenshot(ls.Link, 100, 100)
 		if err != nil {
 			if strings.Contains(link, phantomjsscreenshot.EncodingField) {
 				//good chance we still have an image to decode
