@@ -1,0 +1,12 @@
+github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
+github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/httpreserve/phantomjsscreenshot v0.0.0-20180422150311-c763ac7abadc h1:QSH5I52X/qdPuJcWK4pymLQWHc+Pp2IEvvAqLE7Xhk4=
+github.com/httpreserve/phantomjsscreenshot v0.0.0-20180422150311-c763ac7abadc/go.mod h1:5buv8evqeUmXcW01Gmdjgqs5ttSySQXQOFiRgCAMP+U=
+github.com/httpreserve/simplerequest v0.0.0-20170904111322-6f325573aa95 h1:c6ci9fUN0o3SB1kI6N9Nn8L+/pAlrCzvJhXOKprSS9g=
+github.com/httpreserve/simplerequest v0.0.0-20170904111322-6f325573aa95/go.mod h1:1gggeoGjBdclzVr/HfTjL6AtLe6ei+2oNjVT++aZacw=
+github.com/httpreserve/wayback v0.0.0-20170426121002-5a35a28d33c2 h1:pdidxr/hIBsSzx4x4DjBGBANUSb3quUkWdKURc4jEGE=
+github.com/httpreserve/wayback v0.0.0-20170426121002-5a35a28d33c2/go.mod h1:FSVvr4AY9Pwn7jmqLZyInQa/F4YBB5/R2OEHeG3dq9U=
+github.com/justinas/alice v1.2.0 h1:+MHSA/vccVCF4Uq37S42jwlkvI2Xzl7zTPCN5BnZNVo=
+github.com/justinas/alice v1.2.0/go.mod h1:fN5HRH/reO/zrUflLfTN43t3vXvKzvZIENsNEe7i7qA=
+github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
+github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
