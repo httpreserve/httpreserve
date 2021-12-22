@@ -57,9 +57,9 @@ or
 
     Same access point, but encode url and filename in a <i>application/x-www-form-urlencoded</i> form.
 
-**INFO** example: 
+**OPTIONS** example:
 
-    TODO: Add some information to INFO response
+    `curl -X OPTIONS http://httpreserve.info | less`
 
 **RETURN** value:
 
