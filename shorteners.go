@@ -1,5 +1,14 @@
 package httpreserve
 
+// shorteners is a list of potential URL shorteners created from the
+// url team list: https://wiki.archiveteam.org/index.php/URLTeam
+// The list is mostly accurate from this page but some may have copy
+// and pasted incorrrectly.
+//
+// Please submit PRs to add more potential shorteners to this list.
+//
+// NB. It's a list in name only, ofc it is a map - this is for
+// perfomance as it is stored in memory as a hash table.
 var shorteners = map[string]string{
 	"‽.ws":                   "‽.ws",
 	"›.ws":                   "›.ws",
@@ -379,4 +388,5 @@ var shorteners = map[string]string{
 	"zurl.ws":                "zurl.ws",
 	"сёр.рф":                 "сёр.рф",
 	"чоч.рф":                 "чоч.рф",
+	"urlz.fr":                "urlz.fr",
 }

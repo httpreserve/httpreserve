@@ -1,10 +1,12 @@
 package httpreserve
 
 import (
-	"github.com/httpreserve/simplerequest"
-	"github.com/pkg/errors"
+	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/httpreserve/simplerequest"
+	"github.com/pkg/errors"
 )
 
 func min(x, y int) int {
@@ -77,6 +79,23 @@ func HTTPFromSimpleRequest(sr simplerequest.SimpleRequest) (LinkStats, error) {
 	return getLinkStats(sr)
 }
 
+// retrieveTLD returns what should be the top-level domain for a given
+// URL.
+func retrieveTLD(link *url.URL) string {
+	hostSplit := strings.Split(link.Hostname(), ".")
+	if len(hostSplit) < 2 {
+		// Initial thoughts about this is that there isn't much we can
+		// do here, but also, we're unlikely to find a host that doesn't
+		// split into at least two parts - this is probably some other
+		// error that we've picked up earlier.
+		//
+		// NB. defensive.
+		//
+		return link.Hostname()
+	}
+	return strings.Join(hostSplit[len(hostSplit)-2:], ".")
+}
+
 // Handle HTTP functions of the calling application.
 func getLinkStats(req simplerequest.SimpleRequest) (LinkStats, error) {
 	var ls LinkStats
@@ -84,6 +103,7 @@ func getLinkStats(req simplerequest.SimpleRequest) (LinkStats, error) {
 	// populate linkstats asap...
 	ls.link = req.URL
 	ls.Link = req.URL.String()
+	ls.tld = retrieveTLD(req.URL)
 
 	// make sure if we get a url shortener we handle it on its merit...
 	req.NoRedirect(true)
@@ -105,9 +125,26 @@ func getLinkStats(req simplerequest.SimpleRequest) (LinkStats, error) {
 		return ls, err
 	}
 
-	// we probably have a url shortening service...
-	if sr.Location != nil && sr.StatusCode == 301 {
-		return HTTPFromSimpleRequest(simplerequest.Default(sr.Location))
+	// We may have a url shortening service...
+	if sr.Location != nil && (sr.StatusCode >= 300 && sr.StatusCode < 400) {
+		// If the top-level domain isn't in the new location, we will
+		// treat the request as being a request from a URL-shortener,
+		// that means, the TLD is elsewhere.
+		if !strings.Contains(sr.Location.String(), ls.tld) {
+			// If the tld and the returned location is different, then
+			// we should check if it is a shortner to follow. If it
+			// isn't a shortner, then we should request the URL as-is.
+			//
+			// NB. we don't need these nested ifs. We can ask straight
+			// out if it's a shortener. But I quite like them for now
+			// for readability and extensibility and I', not worried
+			// about performance.
+			//
+			if _, ok := shorteners[ls.tld]; ok {
+				log.Println("shortener")
+				return HTTPFromSimpleRequest(simplerequest.Default(sr.Location))
+			}
+		}
 	}
 
 	// start adding to our LinkStat struct as soon as possible

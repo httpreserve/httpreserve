@@ -33,6 +33,7 @@ type LinkStats struct {
 	statuscode int
 	header     *http.Header
 	link       *url.URL
+	tld        string
 
 	// Pretty Debug
 	prettyRequest  string
