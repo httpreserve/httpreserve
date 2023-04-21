@@ -56,7 +56,7 @@ func configureRequest(sr simplerequest.SimpleRequest) (string, bool) {
 // retrieve some basic information out from a web resource.
 // Call handlehttp from a SimpleRequest object instead
 // of calling function directly...
-func HTTPFromSimpleRequest(sr simplerequest.SimpleRequest) (LinkStats, error) {
+func HTTPFromSimpleRequest(sr simplerequest.SimpleRequest, sourceURL string) (LinkStats, error) {
 
 	// identify our agent, and then configure requesr...
 	sr.Agent(VersionText())
@@ -76,7 +76,7 @@ func HTTPFromSimpleRequest(sr simplerequest.SimpleRequest) (LinkStats, error) {
 	}
 
 	//retrieve our link stats...
-	return getLinkStats(sr)
+	return getLinkStats(sr, sourceURL)
 }
 
 // retrieveTLD returns what should be the top-level domain for a given
@@ -97,13 +97,17 @@ func retrieveTLD(link *url.URL) string {
 }
 
 // Handle HTTP functions of the calling application.
-func getLinkStats(req simplerequest.SimpleRequest) (LinkStats, error) {
+func getLinkStats(req simplerequest.SimpleRequest, sourceURL string) (LinkStats, error) {
 	var ls LinkStats
 
 	// populate linkstats asap...
 	ls.link = req.URL
 	ls.Link = req.URL.String()
 	ls.tld = retrieveTLD(req.URL)
+
+	if sourceURL == "" {
+		sourceURL = ls.Link
+	}
 
 	// make sure if we get a url shortener we handle it on its merit...
 	req.NoRedirect(true)
@@ -141,8 +145,7 @@ func getLinkStats(req simplerequest.SimpleRequest) (LinkStats, error) {
 			// about performance.
 			//
 			if _, ok := shorteners[ls.tld]; ok {
-				log.Println("shortener")
-				return HTTPFromSimpleRequest(simplerequest.Default(sr.Location))
+				return HTTPFromSimpleRequest(simplerequest.Default(sr.Location), sourceURL)
 			}
 		}
 	}
@@ -167,6 +170,9 @@ func getLinkStats(req simplerequest.SimpleRequest) (LinkStats, error) {
 
 	// For debug record pertinent packet details...
 	ls.header = &sr.Header
+
+	// Commit the original request to the stat here.
+	ls.SourceURL = sourceURL
 
 	// Do we have to do NT lan Manager negotiation...
 	if checkNTLM(sr) {

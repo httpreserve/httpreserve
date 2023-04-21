@@ -30,7 +30,7 @@ func testConnection(requrl string) (LinkStats, error) {
 		// processing time
 		starttime = time.Now()
 
-		ls, err := HTTPFromSimpleRequest(simplerequest.Default(req))
+		ls, err := HTTPFromSimpleRequest(simplerequest.Default(req), "")
 		if err != nil {
 			return ls, errors.Wrap(err, "handlehttp() failed")
 		}

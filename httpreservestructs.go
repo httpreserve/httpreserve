@@ -17,6 +17,7 @@ type LinkStats struct {
 	ContentType                 string
 	ResponseCode                int
 	ResponseText                string
+	SourceURL                   string // URL requested by the caller
 	ScreenShot                  string // HREF to screenshot
 	InternetArchiveLinkLatest   string
 	InternetArchiveLinkEarliest string // Earliest link in Internet Archive
