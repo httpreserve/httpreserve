@@ -19,7 +19,7 @@ The library comes with a default server mode that can be configured for
 POST and GET requests. POST by default. Default port is :2040 but this can
 also be selected at runtime.
 
-<img id="logo" src="https://github.com/httpreserve/httpreserve/raw/master/src/images/defaultserver.png" alt="httpreserve"/>
+![Image of the in-built HTTPPreserve server](src/images/defaultserver.png)
 
 The default server can also be stood up as a web service. The API is
 documented below. 
