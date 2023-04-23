@@ -141,7 +141,7 @@ var httpreservePages = `
         <style>
             body { min-width:750px; font-family: arial, verdana; font-size: 14px; margin-bottom: 20px}
             figure { font-family: arial, helvetica, verdana; font-size: 40px; font-weight: bold; margin-bottom: 8px; }
-            h1 { font-size: 40px; }
+            h1 { font-size: 40px; margin-bottom: 0px }
 
             figure.loading { font-family: arial, verdana; font-size: 8px; margin-top: -2px; font-weight: normal; }
 
