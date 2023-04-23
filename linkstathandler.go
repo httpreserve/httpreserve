@@ -2,15 +2,18 @@ package httpreserve
 
 import (
 	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"regexp"
+	"strings"
+	"time"
+
 	"github.com/httpreserve/phantomjsscreenshot"
 	"github.com/httpreserve/simplerequest"
 	"github.com/httpreserve/wayback"
 	"github.com/pkg/errors"
-	"net/http"
-	"net/http/httputil"
-	"net/url"
-	"strings"
-	"time"
 )
 
 var areyouthere = true
@@ -54,6 +57,33 @@ func GetPrettyResponse(ls LinkStats) string {
 	return ls.prettyResponse
 }
 
+
+// findAndFormatDate returns a formatted date for a given value.
+func formatDate(inputDate string) string {
+	const fourteenDigitDateFormat = "20060102150405"
+	outputDate, _ := time.Parse(fourteenDigitDateFormat, inputDate)
+	return fmt.Sprintf("%s", outputDate)
+}
+
+// getDates make the 14-digit IA saved date a little more human readable
+// and thus meaningful to users.
+func getDates(earliest string, latest string) (string, string) {
+
+	// Compile a regex to match just 14-digit numeric values.
+	regexPattern, _ := regexp.Compile("\\d{14}")
+
+	datetime := regexPattern.FindString(earliest)
+
+	if datetime == "" {
+		return "", ""
+	}
+
+	earliest = formatDate(datetime)
+	latest = formatDate(regexPattern.FindString(latest))
+
+	return earliest, latest
+}
+
 // Internal function used to finalize a struct to be used
 // for reporting in the app whether our query has been a
 // successful one or not...
@@ -69,6 +99,9 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 		if wb.NotInWayback == false {
 			ls.InternetArchiveLinkEarliest = wb.EarliestWayback
 			ls.InternetArchiveLinkLatest = wb.LatestWayback
+			earliest, latest := getDates(wb.EarliestWayback, wb.LatestWayback)
+			ls.InternetArchiveEarliestDate = earliest
+			ls.InternetArchiveLatestDate = latest
 		} else {
 			ls.Archived = false
 		}
