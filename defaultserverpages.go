@@ -224,5 +224,5 @@ var httpreservePages = `
 
 var loading string = "'<figure><img class=\"rotate\" src=\"" + httpreserveImage + "\" " +
 	"width=\"100px\" height=\"100px\" alt=\"loading\"/>" +
-	"<figcaption class=\"loading\" style=\"font-family: helvetica; arial, verdana;\">" +
+	"<figcaption class=\"loading\" style=\"font-family: helvetica; arial, verdana; font-size: 24px;\">" +
 	"processing</figcaption></figure>'"
