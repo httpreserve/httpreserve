@@ -8,15 +8,15 @@ import (
 	"time"
 )
 
-var starttime time.Time
-var elapsedtime time.Duration
+var startTime time.Time
+var elapsedTime time.Duration
 
-// Httpreserves primary handler for different protocols
-func testConnection(requrl string) (LinkStats, error) {
+// handleRequest is HTTPreserve's primary handler for different protocols.
+func handleRequest(reqURL string) (LinkStats, error) {
 	var ls LinkStats
 	var err error
 
-	req, err := url.Parse(requrl)
+	req, err := url.Parse(reqURL)
 	if err != nil {
 		return ls, errors.Wrap(err, "url parse failed")
 	}
@@ -27,12 +27,10 @@ func testConnection(requrl string) (LinkStats, error) {
 	case "http":
 		fallthrough
 	case "https":
-		// processing time
-		starttime = time.Now()
-
+		startTime = time.Now() // Record processing time.
 		ls, err := HTTPFromSimpleRequest(simplerequest.Default(req), "")
 		if err != nil {
-			return ls, errors.Wrap(err, "handlehttp() failed")
+			return ls, errors.Wrap(err, "handleRequest() failed")
 		}
 		return ls, nil
 	case "":
@@ -50,35 +48,71 @@ func testConnection(requrl string) (LinkStats, error) {
 // some point as it doesn't do a lot in its own right.
 func linkStat(url string) (LinkStats, error) {
 	var ls LinkStats
-	ls, err := testConnection(url)
+	ls, err := handleRequest(url)
 	return ls, err
 }
 
-// GenerateLinkStats is used to return a JSON object for a URL
-// specified in link variable passed to the function.
-func GenerateLinkStats(link string, fname string, screengrab bool) (LinkStats, error) {
-
-	// set global variable to help folks limit data sent by screenshots
-	if screengrab != true {
-		snapshot = false
-	}
-
+// generateLinkStats performs the setup work prior to returning a LinkStat struct.
+func generateLinkStats(link string) LinkStats {
 	ls, err := linkStat(link)
 	if err != nil {
 		ls, _ = manageLinkStatErrors(ls, err)
 		//TODO: consider what to do with manageLinkStatErrors here...
 	}
+	return ls
+}
+
+// handleLinkStatError is a helper for our generateLinkStats functions below.
+func handleLinkStatError(ls LinkStats, err error) (LinkStats, error) {
+	if err.Error() == wayback.ErrorNoIALink.Error() {
+		// we can ignore this, not a fatal error.
+		return ls, nil
+	}
+	return ls, err
+}
+
+// GenerateLinkStats is used to return a JSON object for a URL
+// specified in link variable passed to the function.
+func GenerateLinkStats(link string, fileName string, screenGrab bool) (LinkStats, error) {
+	// Limit data being sent by disabling screenshots if selected.
+	if screenGrab != true {
+		snapshot = false
+	}
+	ls := generateLinkStats(link)
 	// Positive or negative result, populate LS structure
-	ls, err = makeLinkStats(ls, err)
+	var err error
+	ls, err = makeLinkStats(ls, err, false)
 	if err != nil {
-		if err.Error() == wayback.ErrorNoIALink.Error() { // TODO: may be able to remove
-			// we can ignore this, not a fatal error
-		} else {
+		_, err = handleLinkStatError(ls, err)
+		if err != nil {
 			return ls, err
 		}
 	}
-	if fname != "" {
-		ls.FileName = fname
+	if fileName != "" {
+		ls.FileName = fileName
+	}
+	return ls, nil
+}
+
+// GenerateLinkStatsEncoded encodes LinkStat JSON with HTML entities for display online,
+// e.g. on HTTPreserve.info.
+func GenerateLinkStatsEncoded(link string, fileName string, screenGrab bool) (LinkStats, error) {
+	// Limit data being sent by disabling screenshots if selected.
+	if screenGrab != true {
+		snapshot = false
+	}
+	ls := generateLinkStats(link)
+	// Positive or negative result, populate LS structure
+	var err error
+	ls, err = makeLinkStats(ls, err, true)
+	if err != nil {
+		_, err = handleLinkStatError(ls, err)
+		if err != nil {
+			return ls, err
+		}
+	}
+	if fileName != "" {
+		ls.FileName = fileName
 	}
 	return ls, nil
 }

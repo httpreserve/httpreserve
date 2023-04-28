@@ -133,7 +133,7 @@ func handleSubmitToInternetArchive(w http.ResponseWriter, r *http.Request) {
 
 // retrieve linkstats from httpreserve
 func retrieveLinkStats(link string, fname string) string {
-	ls, _ := GenerateLinkStats(link, fname, true)
+	ls, _ := GenerateLinkStatsEncoded(link, fname, true)
 	js := MakeLinkStatsJSON(ls)
 	return js
 }

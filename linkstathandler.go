@@ -1,6 +1,7 @@
 package httpreserve
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -57,17 +58,16 @@ func GetPrettyResponse(ls LinkStats) string {
 	return ls.prettyResponse
 }
 
-
-// findAndFormatDate returns a formatted date for a given value.
-func formatDate(inputDate string) string {
+// formatISODate returns a formatted date for a given value.
+func formatISODate(inputDate string) string {
 	const fourteenDigitDateFormat = "20060102150405"
 	outputDate, _ := time.Parse(fourteenDigitDateFormat, inputDate)
 	return fmt.Sprintf("%s", outputDate)
 }
 
-// getDates make the 14-digit IA saved date a little more human readable
-// and thus meaningful to users.
-func getDates(earliest string, latest string) (string, string) {
+// getISODates make the 14-digit IA saved date a little more human
+// readable and thus meaningful to users.
+func getISODates(earliest string, latest string) (string, string) {
 
 	// Compile a regex to match just 14-digit numeric values.
 	regexPattern, _ := regexp.Compile("\\d{14}")
@@ -78,8 +78,10 @@ func getDates(earliest string, latest string) (string, string) {
 		return "", ""
 	}
 
-	earliest = formatDate(datetime)
-	latest = formatDate(regexPattern.FindString(latest))
+	earliest = formatISODate(datetime)
+
+	// Latest date is implicit if there is an earliest.
+	latest = formatISODate(regexPattern.FindString(latest))
 
 	return earliest, latest
 }
@@ -87,32 +89,46 @@ func getDates(earliest string, latest string) (string, string) {
 // Internal function used to finalize a struct to be used
 // for reporting in the app whether our query has been a
 // successful one or not...
-func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
-
+func makeLinkStats(ls LinkStats, err error, encoded bool) (LinkStats, error) {
 	ls.AnalysisVersionText = VersionText()
 	ls.AnalysisVersionNumber = VersionNumber()
 	ls.SimpleRequestVersion = simplerequest.Version()
-
 	wb, err := wayback.GetWaybackData(ls.Link, VersionText())
 	// else process the response and error...
 	if wb.AlreadyWayback == nil {
 		if wb.NotInWayback == false {
-			ls.InternetArchiveLinkEarliest = wb.EarliestWayback
 			ls.InternetArchiveLinkLatest = wb.LatestWayback
-			earliest, latest := getDates(wb.EarliestWayback, wb.LatestWayback)
-			ls.InternetArchiveEarliestDate = earliest
+			earliest, latest := getISODates(wb.EarliestWayback, wb.LatestWayback)
+			// There is only one snapshot and that will appear in the latest field.
+			if !strings.Contains(wb.EarliestWayback, "web.archive.org/save") {
+				ls.InternetArchiveLinkEarliest = wb.EarliestWayback
+				ls.InternetArchiveEarliestDate = earliest
+			}
 			ls.InternetArchiveLatestDate = latest
+			if !strings.Contains(latest, "web.archive.org/save") {
+				var robustDateEarly, robustDateLate string
+				// Add Robust links here.
+				if !encoded {
+					robustDateEarly, robustDateLate = getRobust(ls.Link, wb.EarliestWayback, wb.LatestWayback)
+				} else {
+					robustDateEarly, robustDateLate = getRobustEncoded(ls.Link, wb.EarliestWayback, wb.LatestWayback)
+				}
+				if robustDateEarly != "" {
+					// There is only one snapshot and that will appear in the latest field.
+					if !strings.Contains(wb.EarliestWayback, "web.archive.org/save") {
+						ls.RobustLinkEarliest = robustDateEarly
+					}
+					ls.RobustLinkLatest = robustDateLate
+				}
+			}
 		} else {
 			ls.Archived = false
 		}
-
 		ls.InternetArchiveResponseCode = wb.ResponseCode
-
 		ls.InternetArchiveResponseText = wb.ResponseText
 		if err != nil {
 			ls.InternetArchiveResponseText = err.Error()
 		}
-
 		// plus a bit more to understand if the link is archived
 		if !(ls.InternetArchiveResponseCode == http.StatusNotFound || ls.InternetArchiveResponseCode == 0) {
 			ls.Archived = true
@@ -132,8 +148,8 @@ func makeLinkStats(ls LinkStats, err error) (LinkStats, error) {
 }
 
 func addTime(ls LinkStats) LinkStats {
-	elapsedtime = time.Since(starttime)
-	ls.StatsCreationTime = elapsedtime.String()
+	elapsedTime = time.Since(startTime)
+	ls.StatsCreationTime = elapsedTime.String()
 	return ls
 }
 
@@ -161,11 +177,13 @@ func addScreenshot(ls LinkStats) string {
 
 // Format our output to be useful to external callers
 func makeLinkStatJSON(ls LinkStats) (string, error) {
-	js, err := json.MarshalIndent(ls, "", "   ")
-	if err != nil {
-		return "", err
-	}
-	return string(js), nil
+	var buf = new(bytes.Buffer)
+	enc := json.NewEncoder(buf)
+	enc.SetEscapeHTML(false)
+	_ = enc.Encode(ls)
+	var prettyJSON bytes.Buffer
+	_ = json.Indent(&prettyJSON, buf.Bytes(), "", "   ")
+	return string(prettyJSON.Bytes()), nil
 }
 
 // Add important errors to LinkStats structure for us to

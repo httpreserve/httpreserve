@@ -19,14 +19,16 @@ type LinkStats struct {
 	ResponseText                string
 	SourceURL                   string // URL requested by the caller
 	ScreenShot                  string // HREF to screenshot
-	InternetArchiveLinkEarliest string // Earliest link in Internet Archive
+	InternetArchiveLinkEarliest string `json:"InternetArchiveLinkEarliest,omitempty"`
 	InternetArchiveEarliestDate string `json:"InternetArchiveEarliestDate,omitempty"`
 	InternetArchiveLinkLatest   string
 	InternetArchiveLatestDate   string `json:"InternetArchiveLatestDate,omitempty"`
 	InternetArchiveSaveLink     string // Link to use to save from the Internet
 	InternetArchiveResponseCode int
 	InternetArchiveResponseText string
-	Archived                    bool // Has the Internet Archive saved the page or not?
+	RobustLinkEarliest          string `json:"RobustLinkEarliest,omitempty"` // A robust hyperlink snippet linking to a live url and a memento version
+	RobustLinkLatest            string `json:"RobustLinkLatest,omitempty"`   // A robust hyperlink snippet linking to a live url and a memento version
+	Archived                    bool   // Has the Internet Archive saved the page or not?
 	Error                       bool
 	ErrorMessage                string
 	StatsCreationTime           string

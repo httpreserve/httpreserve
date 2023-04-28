@@ -202,7 +202,7 @@ var httpreservePages = `
            <input class="button" type="submit" value="httpreserve">
         </form>
         <br/><br/>
-        <pre class="analysis" id="httpreserve-analysis"></div>
+        <pre class="analysis" id="httpreserve-analysis"/></div>
         </p>
         <div>
         <center>
