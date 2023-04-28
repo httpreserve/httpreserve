@@ -6,7 +6,7 @@ const httpUSERAGENT = "exponentialDK-httpreserve/"
 
 // Version will return a simple version number for the app.
 func Version() string {
-	return "0.0.12"
+	return "0.0.13"
 }
 
 // VersionNumber is a synonym for Version()
