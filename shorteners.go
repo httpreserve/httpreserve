@@ -389,4 +389,9 @@ var shorteners = map[string]string{
 	"сёр.рф":                 "сёр.рф",
 	"чоч.рф":                 "чоч.рф",
 	"urlz.fr":                "urlz.fr",
+	// Shortener values added post URLTeam update.
+	"t.co":     "t.co",     // Twitter shortener.
+	"qrty.io":  "qrty.io",  // QR code shortener.
+	"l.ead.me": "l.ead.me", // QR code shortener.
+	"qrli.de":  "qrli.de",  // QR code shortener.
 }
