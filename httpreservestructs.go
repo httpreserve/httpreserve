@@ -28,6 +28,7 @@ type LinkStats struct {
 	InternetArchiveResponseText string
 	RobustLinkEarliest          string `json:"RobustLinkEarliest,omitempty"` // A robust hyperlink snippet linking to a live url and a memento version
 	RobustLinkLatest            string `json:"RobustLinkLatest,omitempty"`   // A robust hyperlink snippet linking to a live url and a memento version
+	PWID                        string `json:PWID,omitempty`                 // Persistent Web Identifier DRAFT URN standard from Denmark.
 	Archived                    bool   // Has the Internet Archive saved the page or not?
 	Error                       bool
 	ErrorMessage                string
