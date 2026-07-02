@@ -2,11 +2,12 @@ package httpreserve
 
 import (
 	"fmt"
-	"github.com/httpreserve/simplerequest"
-	"github.com/httpreserve/wayback"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+
+	"github.com/httpreserve/simplerequest"
+	"github.com/httpreserve/wayback"
 )
 
 const requestedURL = "url"
@@ -119,6 +120,10 @@ func handleSubmitToInternetArchive(w http.ResponseWriter, r *http.Request) {
 	// else continue to submit to internet archive
 	_, err := wayback.SubmitToInternetArchive(link, VersionText())
 	if err != nil {
+		if fmt.Sprintf("%s", err) == wayback.SaveTooMany {
+			handleHttpreserve(w, r)
+			return
+		}
 		ls.FileName = fname
 		ls.Link = link
 		ls.Error = true
