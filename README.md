@@ -12,7 +12,7 @@
 A tool to check the status of a weblink and also see whether it is archived
 in the [Internet Archive](https://archive.org/).
 
-Try it out here [httpreserve.info](http://httpreserve.info)
+Try it out here [httpreserve.info](https://httpreserve.info)
 
 ## Default Server
 
@@ -51,13 +51,13 @@ or
 
     [http://<i>{httpreserve-ip-address}:{port}</i>/httpreserve?url=http://www.google.com&filename=filename.txt][example-1]
 
-[example-1]: http://httpreserve.info/httpreserve?url=http://www.google.com&filename=filename.txt
+[example-1]: https://httpreserve.info/httpreserve?url=http://www.google.com&filename=filename.txt
 
 * Manage a save request to the internet archive and return HTTPreserve struct:
 
     [http://<i>{httpreserve-ip-address}:{port}</i>/save?url=http://www.google.com&filename=filename.txt][example-2]
 
-[example-2]: http://httpreserve.info/httpreserve?url=http://www.google.com&filename=filename.txt
+[example-2]: https://httpreserve.info/httpreserve?url=http://www.google.com&filename=filename.txt
 
 **POST** example:
 
@@ -65,7 +65,7 @@ or
 
 **OPTIONS** example:
 
-    `curl -X OPTIONS http://httpreserve.info | less`
+    `curl -X OPTIONS https://httpreserve.info | less`
 
 **RETURN** value:
 

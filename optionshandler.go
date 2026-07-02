@@ -24,11 +24,11 @@ There are two things you can do with this service, these are documented below.
 
 See the status of your weblink:
 
-   curl -i -X GET http://httpreserve.info/httpreserve?url=http://www.example.com
+   curl -i -X GET https://httpreserve.info/httpreserve?url=http://www.example.com
 
 Manage the transaction with the wayback machine to save your link:
 
-   curl -i -X GET http://httpreserve.info/save?url=http://www.example.com
+   curl -i -X GET https://httpreserve.info/save?url=http://www.example.com
 
 POST will also work if you encode your form:
 
