@@ -6,7 +6,7 @@ const httpUSERAGENT = "exponentialdecay-httpreserve/"
 
 // Version will return a simple version number for the app.
 func Version() string {
-	return "0.0.18"
+	return "0.0.19"
 }
 
 // VersionNumber is a synonym for Version()
