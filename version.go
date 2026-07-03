@@ -2,11 +2,11 @@ package httpreserve
 
 // User-agent to identify code being run
 // e.g. "exponentialDK-httpreserve/0.0.0
-const httpUSERAGENT = "exponentialDK-httpreserve/"
+const httpUSERAGENT = "exponentialdecay-httpreserve/"
 
 // Version will return a simple version number for the app.
 func Version() string {
-	return "0.0.17"
+	return "0.0.18"
 }
 
 // VersionNumber is a synonym for Version()
