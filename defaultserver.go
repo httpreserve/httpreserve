@@ -2,8 +2,9 @@ package httpreserve
 
 import (
 	"fmt"
-	"github.com/justinas/alice"
 	"net/http"
+
+	"github.com/justinas/alice"
 )
 
 // Primary handler for httpreserve requests
@@ -22,7 +23,7 @@ func savelink(w http.ResponseWriter, r *http.Request) {
 func notFound(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprintln(w, fourfour)
+	fmt.Fprint(w, fourfour)
 }
 
 // Handle response when a page is requested by the browser
