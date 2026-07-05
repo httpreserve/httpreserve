@@ -193,7 +193,7 @@ func makeLinkStatJSON(ls LinkStats) (string, error) {
 	_ = enc.Encode(ls)
 	var prettyJSON bytes.Buffer
 	_ = json.Indent(&prettyJSON, buf.Bytes(), "", "   ")
-	return string(prettyJSON.Bytes()), nil
+	return prettyJSON.String(), nil
 }
 
 // Add important errors to LinkStats structure for us to

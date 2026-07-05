@@ -18,7 +18,7 @@ type LinkStats struct {
 	ResponseCode                int
 	ResponseText                string
 	SourceURL                   string // URL requested by the caller
-	ScreenShot                  string // HREF to screenshot
+	ScreenShot                  string `json:"ScreenShot,omitempty"`
 	InternetArchiveLinkEarliest string `json:"InternetArchiveLinkEarliest,omitempty"`
 	InternetArchiveEarliestDate string `json:"InternetArchiveEarliestDate,omitempty"`
 	InternetArchiveLinkLatest   string
