@@ -135,8 +135,7 @@ func makeLinkStats(ls LinkStats, err error, encoded bool) (LinkStats, error) {
 			ls.Archived = true
 		}
 
-		if ls.ContentType != "" &&
-			ls.ResponseCode != 404 &&
+		if ls.ResponseCode != 404 &&
 			!strings.Contains(wb.LatestWayback, "web.archive.org/save") {
 			// Provide a PWID for a resource that does exist. Return the
 			// latest snapshot version.

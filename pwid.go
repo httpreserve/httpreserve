@@ -40,17 +40,79 @@ func getPWID(link string, contentType string, date string) string {
 		"application/xhtml+xml",
 	}
 
+	// Top 20 or so TDLs to help disambiguate page versus part.
+	tlds := []string{
+		".app",
+		".at",
+		".au",
+		".be",
+		".berlin",
+		".biz",
+		".br",
+		".ca",
+		".ch",
+		".cn",
+		".com",
+		".co.uk",
+		".de",
+		".es",
+		".eu",
+		".fr",
+		".gov",
+		".in",
+		".io",
+		".info",
+		".it",
+		".net",
+		".nl",
+		".online",
+		".org",
+		".org",
+		".pl",
+		".rocks",
+		".ru",
+		".shop",
+		".store",
+		".tk",
+		".tv",
+		".uk",
+		".us",
+		".xyz",
+	}
+
 	// NB. Keep in mind that this will change with a different memento.
 	const urn string = "urn:pwid:archive.org"
 	pwidDate := getPWIDDate(date)
 
-	for _, val := range pageMimes {
-		if strings.Contains(contentType, val) {
-			if !strings.HasSuffix(link, "/") {
-				link = fmt.Sprintf("%s/", link)
+	if contentType != "" {
+		for _, val := range pageMimes {
+			if strings.Contains(contentType, val) {
+				if !strings.HasSuffix(link, "/") {
+					link = fmt.Sprintf("%s/", link)
+				}
+				return fmt.Sprintf("%s:%s:page:%s", urn, pwidDate, link)
 			}
+		}
+	}
+
+	// We haven't got a content type. Use a heuristic to try and
+	// derive more info.
+	for _, value := range tlds {
+		if strings.HasSuffix(link, value) {
 			return fmt.Sprintf("%s:%s:page:%s", urn, pwidDate, link)
 		}
 	}
+
+	if strings.HasSuffix(link, "/") ||
+		strings.HasSuffix(link, ".htm") ||
+		strings.HasSuffix(link, ".html") ||
+		strings.HasSuffix(link, ".xhtml") ||
+		strings.HasSuffix(link, ".md") ||
+		strings.HasSuffix(link, ".php") ||
+		strings.HasSuffix(link, ".aspx") {
+		return fmt.Sprintf("%s:%s:page:%s", urn, pwidDate, link)
+	}
+
+	// Finally, assume page part.
 	return fmt.Sprintf("%s:%s:part:%s", urn, pwidDate, link)
 }
