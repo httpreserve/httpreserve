@@ -1,11 +1,12 @@
 package httpreserve
 
 import (
+	"net/url"
+	"time"
+
 	"github.com/httpreserve/simplerequest"
 	"github.com/httpreserve/wayback"
 	"github.com/pkg/errors"
-	"net/url"
-	"time"
 )
 
 var startTime time.Time
@@ -75,7 +76,7 @@ func handleLinkStatError(ls LinkStats, err error) (LinkStats, error) {
 // specified in link variable passed to the function.
 func GenerateLinkStats(link string, fileName string, screenGrab bool) (LinkStats, error) {
 	// Limit data being sent by disabling screenshots if selected.
-	if screenGrab != true {
+	if !screenGrab {
 		snapshot = false
 	}
 	ls := generateLinkStats(link)
